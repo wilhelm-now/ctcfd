@@ -1,6 +1,13 @@
 #include <util/typelist.h>
+#include <util/number.h>
 
-typedef TYPELIST_1(int) t1;
-typedef TYPELIST_3(int, long, long long) t3;
+#include "step1_params.h"
 
-int main(){}
+#include <iostream>
+
+#define PASTE_EXEC(x) #x " = " << x
+
+int main()
+{
+	std::cout << PASTE_EXEC(NX) << ", " PASTE_EXEC(DX) << '\n';
+}
