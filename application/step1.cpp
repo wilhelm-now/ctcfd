@@ -8,11 +8,12 @@
 
 #include <util/valuelist.h>
 
+#include <util/debug.h>
+
 #include "step1_params.h"
 
 #include <iostream>
 
-#define PASTE_EXEC(x) #x " = " << x
 
 template<unsigned index>
 struct initial_condition
@@ -20,28 +21,33 @@ struct initial_condition
 	typedef typename conditional<(DX*index >= 0.5 && DX*index <= 1), number_t<2>, number_t<1>>::type type;
 };
 
-template<typename T>
-void print_type()
+template<unsigned timestep>
+struct computed;
+
+template<>
+struct computed<0>
 {
-	std::cout << __FUNCSIG__ << '\n';
-}
+	typedef for_i<NX, initial_condition>::type type;
+};
+
+template<unsigned timestep>
+struct computed
+{
+	// todo backwards diff
+	// u[current_t=timestep, idx] = u[previous_t, idx] - (C*DT/DX)*(u[previous_t, idx] - u[previous_t, idx-1]
+	//(C * DT * 1.0 / DX);  // scale thing
+	typedef computed<0>::type type; // TODO: not this.
+	typedef typelist<
+		computed<timestep - 1>::type::head, // no boundary condition on LHS
+		null_t> attempt;
+};
+
 
 int main()
 {
 	std::cout << PASTE_EXEC(NX) << ", " PASTE_EXEC(DX) << '\n';
-	typedef number_t<1> one_t;
-	typedef TYPELIST_4(one_t, one_t, one_t, one_t) manual_ones;
-	typedef ones<4>::type generated_ones;
 
-	print_type<manual_ones>();
-	print_type<generated_ones>();
-
-	print_type<range<0, 10, 1>::type >();
-
-	std::cout << value_printer<range<0, 10, 2>::type >{} << '\n';
-	std::cout << value_printer<range<0, 45, 4>::type >{} << '\n';
-
-	typedef for_i<NX, initial_condition>::type initial;
-
-	print_type<initial>();
+	std::cout << value_printer<computed<0>::type>{} << '\n';
+	std::cout << value_printer<computed<NT>::type>{} << '\n';
 }
+	
