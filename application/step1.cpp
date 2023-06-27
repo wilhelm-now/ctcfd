@@ -3,6 +3,8 @@
 
 #include <util/ones.h>
 #include <util/range.h>
+#include <util/conditional.h>
+#include <util/for_i.h>
 
 #include <util/valuelist.h>
 
@@ -11,6 +13,12 @@
 #include <iostream>
 
 #define PASTE_EXEC(x) #x " = " << x
+
+template<unsigned index>
+struct initial_condition
+{
+	typedef typename conditional<(DX*index >= 0.5 && DX*index <= 1), number_t<2>, number_t<1>>::type type;
+};
 
 template<typename T>
 void print_type()
@@ -32,4 +40,8 @@ int main()
 
 	std::cout << value_printer<range<0, 10, 2>::type >{} << '\n';
 	std::cout << value_printer<range<0, 45, 4>::type >{} << '\n';
+
+	typedef for_i<NX, initial_condition>::type initial;
+
+	print_type<initial>();
 }

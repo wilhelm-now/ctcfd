@@ -26,5 +26,23 @@ struct typelist
 #define TYPELIST_11(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) typelist<T1, TYPELIST_10(T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) >
 #define TYPELIST_12(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12) typelist<T1, TYPELIST_11(T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12) >
 
+namespace tl
+{
+	template<typename tlist, unsigned index>
+	struct type_at;
+
+	template<typename head, typename tail>
+	struct type_at<typelist<head, tail>, 0>
+	{
+		typedef head type;
+	};
+
+	template<typename head, typename tail, unsigned index>
+	struct type_at<typelist<head, tail>, index>
+	{
+		typedef typename type_at<tail, index - 1>::type type;
+	};
+
+}
 
 #endif // ! TYPELIST_H

@@ -1,5 +1,5 @@
 set(C 1)
-set(NX 81)
+set(NX 41)
 set(DT 0.025)
 set(NT 25)
 configure_file(
