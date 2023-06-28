@@ -28,6 +28,7 @@ struct typelist
 
 namespace tl
 {
+	// Indexed access
 	template<typename tlist, unsigned index>
 	struct type_at;
 
@@ -43,6 +44,21 @@ namespace tl
 		typedef typename type_at<tail, index - 1>::type type;
 	};
 
+	// length
+	template<typename tlist>
+	struct length;
+
+	template<>
+	struct length<null_t>
+	{
+		enum { value = 0 };
+	};
+
+	template<typename head, typename tail>
+	struct length<typelist<head, tail> >
+	{
+		enum {value = 1 + length<tail>::value};
+	};
 }
 
 #endif // ! TYPELIST_H

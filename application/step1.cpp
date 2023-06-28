@@ -1,53 +1,65 @@
 #include <util/typelist.h>
 #include <util/number.h>
 
-#include <util/ones.h>
-#include <util/range.h>
-#include <util/conditional.h>
 #include <util/for_i.h>
-
 #include <util/valuelist.h>
-
-#include <util/debug.h>
 
 #include "step1_params.h"
 
 #include <iostream>
 
+#define SCALE(x) x << 24
 
 template<unsigned index>
 struct initial_condition
 {
-	typedef typename conditional<(DX*index >= 0.5 && DX*index <= 1), number_t<2>, number_t<1>>::type type;
+	typedef typename conditional<(DX* index >= 0.5 && DX * index <= 1), number_t<SCALE(2)>, number_t<SCALE(1)>>::type type;
 };
 
+template<typename values>
+struct compute_wave;
+
+template<typename T>
+struct compute_wave<typelist<T, null_t> >
+{
+	typedef null_t type;
+};
+
+template<typename previous, typename current>
+class compute_wave<typelist<previous, current> >
+{
+	// backwards diff
+	// u[current_t=timestep, idx] = u[previous_t, idx] - (C*DT/DX)*(u[previous_t, idx] - u[previous_t, idx-1]
+	enum { computed_value = (long long)(current::head::value*1.0 - (C*DT*1.0/DX)*(current::head::value - previous::value*1.0)) };
+public:
+	typedef typelist<number_t< computed_value >, typename compute_wave<current>::type> type;
+};
+
+
 template<unsigned timestep>
-struct computed;
+struct wave_eq;
 
 template<>
-struct computed<0>
+struct wave_eq<0>
 {
 	typedef for_i<NX, initial_condition>::type type;
 };
 
 template<unsigned timestep>
-struct computed
+struct wave_eq
 {
-	// todo backwards diff
-	// u[current_t=timestep, idx] = u[previous_t, idx] - (C*DT/DX)*(u[previous_t, idx] - u[previous_t, idx-1]
-	//(C * DT * 1.0 / DX);  // scale thing
-	typedef computed<0>::type type; // TODO: not this.
-	typedef typelist<
-		computed<timestep - 1>::type::head, // no boundary condition on LHS
-		null_t> attempt;
+	typedef typelist <
+		typename wave_eq<timestep - 1>::type::head, // backward diff, no data on LHS
+		typename compute_wave<typename wave_eq<timestep - 1>::type>::type
+		> type;
 };
 
 
 int main()
 {
-	std::cout << PASTE_EXEC(NX) << ", " PASTE_EXEC(DX) << '\n';
-
-	std::cout << value_printer<computed<0>::type>{} << '\n';
-	std::cout << value_printer<computed<NT>::type>{} << '\n';
+	std::cout << "X0, X1, XM = [" << value_printer<wave_eq<0>::type>{} 
+		<< "], [" << value_printer<wave_eq<NT>::type>{} 
+		<< "], [" << value_printer<wave_eq<NT/2>::type>{}
+		<< "]\n";
 }
 	

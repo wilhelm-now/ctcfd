@@ -1,4 +1,4 @@
-set(C 1)
+set(C 1.0)
 set(NX 41)
 set(DT 0.025)
 set(NT 25)
