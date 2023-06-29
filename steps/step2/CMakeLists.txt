@@ -1,6 +1,6 @@
-set(NX 101)
+set(NX 41)
 set(NT 20)
-set(DT 0.0125)
+set(DT 0.025)
 configure_file(
 	${CMAKE_CURRENT_SOURCE_DIR}/step2_params.h.in 
 	${CMAKE_CURRENT_BINARY_DIR}/step2_params.h
