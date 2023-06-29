@@ -1,2 +1,3 @@
-add_subdirectory(step1)
-add_subdirectory(step2)
+foreach(i RANGE 1 3)
+	add_subdirectory(step${i})
+endforeach()
