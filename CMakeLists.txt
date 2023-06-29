@@ -8,5 +8,5 @@ set(CMAKE_CXX_STANDARD 98) 	# todo: better than this.
 add_library(util INTERFACE)
 target_include_directories(util INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/util)
 
-add_subdirectory(application)
+add_subdirectory(steps)
 

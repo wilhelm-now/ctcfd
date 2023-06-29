@@ -1,0 +1,9 @@
+// x grid points
+#cmakedefine NX @NX@
+// x grid spacing
+#define DX (2.0/(NX - 1))
+
+// time steps
+#cmakedefine NT @NT@
+// time step size
+#cmakedefine DT @DT@

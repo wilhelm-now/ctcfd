@@ -1,7 +1,7 @@
 #ifndef NUMBER_H
 #define NUMBER_H
 
-#define NUMBER_SCALE (1 + 0xFFFFFF) // 24 bits of decimals
+#define NUMBER_SCALE (0x1000000ll) // 24 bits of decimals
 
 // Saves raw number in fixed point format
 template<long long number>

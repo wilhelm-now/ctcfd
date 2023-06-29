@@ -3,12 +3,11 @@
 
 #include <util/for_i.h>
 #include <util/valuelist.h>
+#include <util/conditional.h>
 
 #include "step1_params.h"
 
 #include <iostream>
-
-#define SCALE(x) x << 24
 
 template<unsigned index>
 struct initial_condition

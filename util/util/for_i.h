@@ -2,7 +2,6 @@
 #define FOR_I_H
 
 #include <util/typelist.h>
-#include <util/conditional.h>
 
 namespace detail
 {
