@@ -15,9 +15,9 @@ struct diff<typelist<T, null_t> >
 template<typename head, typename tail>
 class diff<typelist<head, tail> >
 {
-	enum value { value = tail::head::value - head::value };
+	enum value { delta = tail::head::raw_value - head::raw_value };
 public:
-	typedef typelist<number_t<value>, typename diff<tail>::type> type;
+	typedef typelist<number_c<delta>, typename diff<tail>::type> type;
 };
 
 #endif // !DIFF_H

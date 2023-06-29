@@ -14,8 +14,7 @@ struct value_printer<typelist<T, U>>
 {
 	friend std::ostream& operator<<(std::ostream& os, value_printer)
 	{
-		return os << T::value << ", " << value_printer<U>();
-		//return os;
+		return os << T().get() << ", " << value_printer<U>();
 	}
 };
 
@@ -24,8 +23,7 @@ struct value_printer<typelist<T, null_t>>
 {
 	friend std::ostream& operator<<(std::ostream& os, value_printer)
 	{
-		return os << T::value;
-		//return os;
+		return os << T().get();
 	}
 };
 

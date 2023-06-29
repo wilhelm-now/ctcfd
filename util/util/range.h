@@ -11,7 +11,7 @@ namespace detail
 	template<int start, int stop, int step, bool valid = (start + step < stop)>
 	struct range_impl
 	{
-		typedef typelist<number_t<start>,
+		typedef typelist<number_c<NUMBER_MAKE (start)> ,
 			typename range_impl<start + step, stop, step, (start + step < stop)>::type >
 			type;
 	};

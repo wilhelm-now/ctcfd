@@ -13,7 +13,7 @@
 template<unsigned index>
 struct initial_condition
 {
-	typedef typename conditional<(DX* index >= 0.5 && DX * index <= 1), number_t<SCALE(2)>, number_t<SCALE(1)>>::type type;
+	typedef typename conditional<(DX* index >= 0.5 && DX * index <= 1), NUMBER_MAKE(2), NUMBER_MAKE(1)>::type type;
 };
 
 template<typename values>
@@ -30,9 +30,9 @@ class compute_wave<typelist<previous, current> >
 {
 	// backwards diff
 	// u[current_t=timestep, idx] = u[previous_t, idx] - (C*DT/DX)*(u[previous_t, idx] - u[previous_t, idx-1]
-	enum { computed_value = (long long)(current::head::value*1.0 - (C*DT*1.0/DX)*(current::head::value - previous::value*1.0)) };
+	enum { computed_value = (long long)(current::head::raw_value*1.0 - (C*DT*1.0/DX)*(current::head::raw_value - previous::raw_value*1.0)) };
 public:
-	typedef typelist<number_t< computed_value >, typename compute_wave<current>::type> type;
+	typedef typelist<number_c< computed_value >, typename compute_wave<current>::type> type;
 };
 
 
@@ -57,9 +57,9 @@ struct wave_eq
 
 int main()
 {
-	std::cout << "X0, X1, XM = [" << value_printer<wave_eq<0>::type>{} 
-		<< "], [" << value_printer<wave_eq<NT>::type>{} 
-		<< "], [" << value_printer<wave_eq<NT/2>::type>{}
+	std::cout << "U0, U1, UM = [" << value_printer<wave_eq<0>::type>()
+		<< "], [" << value_printer<wave_eq<NT>::type>()
+		<< "], [" << value_printer<wave_eq<NT/2>::type>()
 		<< "]\n";
 }
 	
