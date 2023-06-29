@@ -56,8 +56,6 @@ struct convection
 	> type;
 };
 
-#include <util/debug.h>
-
 int main()
 {
 	std::cout << "U0, U1 = [" << value_printer<convection<0>::type>() << "]"
