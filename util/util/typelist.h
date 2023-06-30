@@ -70,6 +70,21 @@ namespace tl
 	{
 		enum {value = 4 + length<tail>::value};
 	};
+
+	template<typename tlist, typename T>
+	struct append;
+
+	template<typename head, typename T>
+	struct append<typelist<head, null_t>, T>
+	{
+		typedef typename TYPELIST_2(head, T) type;
+	};
+
+	template<typename head, typename tail, typename T>
+	struct append<typelist<head, tail>, T>
+	{
+		typedef typename typelist<head, typename append<tail, T>::type> type;
+	};
 }
 
 #endif // ! TYPELIST_H

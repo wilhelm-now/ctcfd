@@ -69,7 +69,7 @@ if __name__ == "__main__":
     parser.add_argument("--NX", type=int, help="number of x gridpoints")
     parser.add_argument("--LX", type=float, default=2.0, help="length of x domain")
     parser.add_argument("--NU", type=float, help="viscosity")
-    parser.add_argument("-NT",  type=int, default=0,
+    parser.add_argument("--NT",  type=int, default=0,
                         help="timestep to save values from")
     parser.add_argument("-o", "--filename", help="filename to save result in")
 
