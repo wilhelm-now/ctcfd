@@ -1,6 +1,6 @@
 set(LX 6.283185307179586) # 2PI long, need domain length in cpp and py, therefore define here
 set(NX 101)
-set(NT 75)
+set(NT 99)
 set(NU 0.07)
 configure_file(
 	${CMAKE_CURRENT_SOURCE_DIR}/step4_params.h.in 
