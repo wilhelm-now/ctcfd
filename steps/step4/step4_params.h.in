@@ -1,0 +1,16 @@
+// x grid points
+#cmakedefine NX @NX@
+// x grid spacing
+#define DX (2.0/(NX - 1))
+
+// viscosity
+#cmakedefine NU @NU@
+
+// sigma, to be learned about later
+#cmakedefine SIGMA @SIGMA@
+
+// time steps
+#cmakedefine NT @NT@
+// time step size
+#define DT (SIGMA*DX*DX*1.0/NU)
+
