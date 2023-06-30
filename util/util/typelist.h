@@ -25,6 +25,10 @@ struct typelist
 #define TYPELIST_10(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) typelist<T1, TYPELIST_9(T2, T3, T4, T5, T6, T7, T8, T9, T10) >
 #define TYPELIST_11(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) typelist<T1, TYPELIST_10(T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) >
 #define TYPELIST_12(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12) typelist<T1, TYPELIST_11(T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12) >
+#define TYPELIST_13(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13) typelist<T1, TYPELIST_12(T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13) >
+#define TYPELIST_14(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14) typelist<T1, TYPELIST_13(T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14) >
+#define TYPELIST_15(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15) typelist<T1, TYPELIST_14(T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15) >
+#define TYPELIST_16(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16) typelist<T1, TYPELIST_15(T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16) >
 
 namespace tl
 {
@@ -58,6 +62,13 @@ namespace tl
 	struct length<typelist<head, tail> >
 	{
 		enum {value = 1 + length<tail>::value};
+	};
+
+	// Attempted fast-track overload, never checked if it's useful.
+	template<typename T1, typename T2, typename T3, typename T4, typename tail>
+	struct length<typelist<T1, typelist<T2, typelist<T3, typelist<T4, tail> > > > >
+	{
+		enum {value = 4 + length<tail>::value};
 	};
 }
 
