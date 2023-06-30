@@ -13,5 +13,5 @@
 // time steps
 #cmakedefine NT @NT@
 // time step size
-#define DT (SIGMA*DX*DX*1.0/NU)
+#define DT (DX*NU)
 
