@@ -15,4 +15,10 @@ void print_type()
 #endif // _MSVC
 }
 
+template<typename T>
+void print_type(T)
+{
+	print_type<T>();
+}
+
 #endif // !DEBUG_H
