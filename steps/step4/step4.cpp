@@ -1,9 +1,9 @@
 #include "step4_params.h"
+#include "step4_initial.h"
 
 #include <util/typelist.h>
 #include <util/number.h>
 
-#include <util/for_i.h>
 #include <util/valuelist.h>
 
 #include <iostream>
@@ -35,18 +35,12 @@ public:
 template<unsigned timestep>
 struct burgers;
 
-// initial condition meta-function, same as in step-2
-template<unsigned idx>
-struct initial
-{
-	typedef NUMBER_MAKE((idx* DX >= 0.5 && idx * DX <= 1.0) ? 2.0 : 1.0) type;
-};
 
-// apply initial condition
+// save initial condition
 template<>
 struct burgers<0>
 {
-	typedef for_i<NX, initial>::type type;
+	typedef analytical_t0 type;
 };
 
 template<unsigned timestep>

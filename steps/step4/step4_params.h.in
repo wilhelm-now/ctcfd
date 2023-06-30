@@ -1,7 +1,8 @@
 // x grid points
 #cmakedefine NX @NX@
 // x grid spacing
-#define DX (2.0/(NX - 1))
+#define LX @LX@
+#define DX (LX/(NX - 1))
 
 // viscosity
 #cmakedefine NU @NU@
