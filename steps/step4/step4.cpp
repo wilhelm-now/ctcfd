@@ -73,13 +73,41 @@ public:
 	>, computed_boundary>::type type;
 };
 
+// trampolined
+template<unsigned timestep>
+class burgers_continued;
+
+template<>
+struct burgers_continued<90>
+{
+	typedef burgers<90>::type type;
+};
+
+template<unsigned timestep>
+class burgers_continued
+{
+	// Apply periodic boundary conditions
+	typedef typename compute_burgers_point<
+		typename tl::type_at<typename burgers_continued<timestep - 1>::type, NX - 2>::type, // previous
+		typename burgers_continued<timestep - 1>::type::head, // current
+		typename burgers_continued<timestep - 1>::type::tail::head // next
+	>::type computed_boundary;
+public:
+	typedef typename tl::append<typelist<
+		computed_boundary,
+		// compute the rest of the domain with numerical scheme
+		typename compute_burgers<typename burgers_continued<timestep - 1>::type>::type
+	>, computed_boundary>::type type;
+};
+
+
 #define STEP4_CONCAT_IMPL(x, y) x##y
 #define STEP4_CONCAT(x, y) STEP4_CONCAT_IMPL(x, y)
 
 int main()
 {
 	std::cout << "U0, U1, UA = [" << value_printer<burgers<0>::type>() << 
-		"], [" << value_printer<burgers<NT>::type>() << 
+		"], [" << value_printer<burgers_continued<NT>::type>() <<
 		"], [" << value_printer<STEP4_CONCAT(analytical_t, NT)>() <<
 		"]\n";
 }
