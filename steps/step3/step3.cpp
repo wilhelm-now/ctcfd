@@ -36,10 +36,13 @@ template<unsigned timestep>
 struct diffusion;
 
 // initial condition meta-function, same as in step-2
-template<unsigned idx>
 struct initial
 {
-	typedef NUMBER_MAKE((idx* DX >= 0.5 && idx * DX <= 1.0) ? 2.0 : 1.0) type;
+	template<unsigned idx>
+	struct func
+	{
+		typedef NUMBER_MAKE((idx* DX >= 0.5 && idx * DX <= 1.0) ? 2.0 : 1.0) type;
+	};
 };
 
 // apply initial condition

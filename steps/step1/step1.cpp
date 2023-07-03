@@ -9,10 +9,13 @@
 
 #include <iostream>
 
-template<unsigned index>
 struct initial_condition
 {
-	typedef typename conditional<(DX* index >= 0.5 && DX * index <= 1), NUMBER_MAKE(2), NUMBER_MAKE(1)>::type type;
+	template<unsigned index>
+	struct func
+	{
+		typedef typename conditional<(DX* index >= 0.5 && DX * index <= 1), NUMBER_MAKE(2), NUMBER_MAKE(1)>::type type;
+	};
 };
 
 template<typename values>

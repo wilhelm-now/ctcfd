@@ -5,14 +5,14 @@
 
 namespace detail
 {
-	template<template<unsigned> class function, unsigned length, unsigned index, bool valid = index < length>
+	template<typename function, unsigned length, unsigned index, bool valid = index < length>
 	struct for_i_impl
 	{
-		typedef typename typelist<typename function<index>::type,
+		typedef typelist<typename function::template func<index>::type,
 			typename for_i_impl<function, length, index + 1, index + 1 < length > ::type> type;
 	};
 
-	template<template<unsigned> class function, unsigned length, unsigned index>
+	template<typename function, unsigned length, unsigned index>
 	struct for_i_impl<function, length, index, false>
 	{
 		typedef null_t type;
@@ -20,8 +20,14 @@ namespace detail
 }
 
 // Make a typelist from each index
-// function takes an ordinary index and returns a type
-template<unsigned length, template<unsigned> class function>
+// function has a member template meta-function called 'func' which takes an ordinary index and returns a type
+// example: 
+// struct plus_two 
+// { template<unsigned index> 
+//   struct func 
+//   { typedef integral_constant<unsigned, index + 2> type; }; 
+// };
+template<unsigned length, typename function>
 struct for_i : detail::for_i_impl<function, length, 0>
 {
 };
