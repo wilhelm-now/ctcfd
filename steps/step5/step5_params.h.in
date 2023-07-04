@@ -1,0 +1,18 @@
+// grid sizing
+#cmakedefine NX @NX@
+#cmakedefine NY @NY@
+
+#define DX (2.0/(NX - 1))
+#define DY (2.0/(NY - 1))
+
+// wave speed
+#cmakedefine C @C@
+
+// CFL number
+#cmakedefine SIGMA @SIGMA@
+
+// time steps
+#cmakedefine NT @NT@
+
+// time step size
+#define DT (SIGMA*DX)

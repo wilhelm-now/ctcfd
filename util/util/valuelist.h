@@ -27,6 +27,25 @@ struct value_printer<typelist<T, null_t>>
 	}
 };
 
+template<typename Head, typename Tail, typename Next>
+struct value_printer<typelist<typelist<Head, Tail>, Next> >
+{
+	friend std::ostream& operator<<(std::ostream& os, value_printer)
+	{
+		return os << '[' << value_printer<typelist<Head, Tail> >() << ']'
+		 << '\n' << value_printer<Next>();
+	}
+};
+
+template<typename Head, typename Tail>
+struct value_printer<typelist<typelist<Head, Tail>, null_t> >
+{
+	friend std::ostream& operator<<(std::ostream& os, value_printer)
+	{
+		return os << '[' << value_printer<typelist<Head, Tail> >() << ']';
+	}
+};
+
 template<typename values>
 std::ostream& print_values(std::ostream& os)
 {
