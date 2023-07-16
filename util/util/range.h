@@ -3,16 +3,16 @@
 
 #include <util/typelist.h>
 #include <util/number.h>
-#include <util/conditional.h>
+#include <util/for_i.h>
 
 namespace detail
 {
 	// default bool value top avoid having to specify when invoking
-	template<int start, int stop, int step, bool valid = (start + step < stop)>
+	template<int start, int stop, int step, bool valid = (step > 0) ? (start + step < stop) : (start + step > stop)>
 	struct range_impl
 	{
-		typedef typelist<number_c<NUMBER_MAKE (start)> ,
-			typename range_impl<start + step, stop, step, (start + step < stop)>::type >
+		typedef typelist<NUMBER_MAKE (start),
+			typename range_impl<start + step, stop, step, (step > 0) ? (start + step < stop) : (start + step > stop)>::type >
 			type;
 	};
 
