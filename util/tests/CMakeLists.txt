@@ -10,3 +10,4 @@ endmacro()
 
 make_util_test(for_i)
 make_util_test(is_same)
+make_util_test(ones)
