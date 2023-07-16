@@ -10,3 +10,7 @@ target_include_directories(util INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/util)
 
 add_subdirectory(steps)
 
+if (PROJECT_IS_TOP_LEVEL)
+	enable_testing()
+	add_subdirectory(util/tests)
+endif()
