@@ -22,7 +22,7 @@ struct initial
 	{
 		typedef NUMBER_MAKE(
 			(0.5 <= DX * index_i && DX * index_i <= 1.0) && (0.5 <= DY * index_j && DY * index_j <= 1.0) 
-			? 2.0 : 1.0 + index_i*DX)
+			? 2.0 : 1.0)
 			type;
 	};
 };
@@ -30,10 +30,6 @@ struct initial
 // Boundary conditions is u = 1 at each edge
 // X boundary saved here
 typedef ones<NX>::type x_boundary;
-
-// computation for entire domain
-template<typename values>
-struct compute_wave;
 
 // for just rows
 template<typename previous_row, typename current_row>
@@ -64,25 +60,32 @@ struct compute_wave_row<
 		- (C*DT/DX)*(NUMBER_GET_TYPE(current) - NUMBER_GET_TYPE(previous_x)) 
 		- (C*DT/DY)*(NUMBER_GET_TYPE(current) - NUMBER_GET_TYPE(previous_y))) computed;
 
-	typedef typelist</*computed*/ current, 
+	typedef typelist<computed /*current*/, 
 		typename compute_wave_row<
 			typelist<previous_x, next_previous_x>, 
 			typelist<current, next> >::type
 	> type;
 };
 
+// computation for entire domain
+template<typename values>
+struct compute_wave;
+
 template<typename previous_x>
 struct compute_wave<typelist<previous_x, null_t> >
 {
 	// Last index is edge and has boundary condition
-	typedef x_boundary type;
+	typedef TYPELIST_1(x_boundary) type;
 };
 
 template<typename previous_x, typename current_x, typename next_x>
 struct compute_wave<typelist<previous_x, typelist<current_x, next_x> > >
 {
 	typedef typelist<
-		typelist<NUMBER_MAKE(1), typename compute_wave_row<previous_x, current_x>::type>,
+		typelist<NUMBER_MAKE(1), 
+		typename compute_wave_row<previous_x, current_x>::type::tail
+		>
+		,
 		typename compute_wave<typelist<current_x, next_x> >::type
 		> type;
 };
@@ -102,15 +105,10 @@ struct wave2d
 	typedef typename compute_wave<typename wave2d<timestep - 1>::type>::type type;
 };
 
-#include <util/debug.h>
+
 
 int main()
 {
-	std::cout << value_printer2d<wave2d<0>::type>() << '\n';
-	//std::cout << value_printer2d<wave2d<1>::type>() << '\n';
-	print_type<wave2d<0>::type>();
-	std::cout << '\n';
-	print_type<wave2d<1>::type>();
-	std::cout << '\n';
-	print_type<wave2d<2>::type>();
+	std::cout << "u0: " << value_printer2d<wave2d<0>::type>() << '\n';
+	std::cout << "u" << NT << ": " << value_printer2d<wave2d<NT>::type>() << '\n';
 }
