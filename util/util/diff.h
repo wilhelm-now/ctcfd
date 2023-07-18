@@ -2,6 +2,7 @@
 #define DIFF_H
 
 #include <util/typelist.h>
+#include <util/number.h>
 
 // first derivate ignoring grid size: u[i+1] - u[i]
 template<typename valuelist>
