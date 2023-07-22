@@ -12,9 +12,9 @@
 
 #include <iostream>
 
+
 // Setting up initial conditions
 // u = 1.0 everywhere except where 0.5 <= (x, y) <= 1.0
-
 struct initial
 {
 	template<unsigned index_i, unsigned index_j>
@@ -38,8 +38,7 @@ struct compute_wave_row;
 template<typename previous_x_values, typename previous_y>
 struct compute_wave_row<previous_x_values, typelist<previous_y, null_t> >
 {
-	
-	typedef TYPELIST_1(NUMBER_MAKE(1)) type; // enfore boundary condition
+	typedef null_t type; // end of domain at y limit
 };
 
 template<
@@ -59,8 +58,8 @@ struct compute_wave_row<
 		NUMBER_GET_TYPE(current) 
 		- (C*DT/DX)*(NUMBER_GET_TYPE(current) - NUMBER_GET_TYPE(previous_x)) 
 		- (C*DT/DY)*(NUMBER_GET_TYPE(current) - NUMBER_GET_TYPE(previous_y))) computed;
-
-	typedef typelist<computed /*current*/, 
+		
+	typedef typelist<computed, 
 		typename compute_wave_row<
 			typelist<previous_x, next_previous_x>, 
 			typelist<current, next> >::type
@@ -74,16 +73,15 @@ struct compute_wave;
 template<typename previous_x>
 struct compute_wave<typelist<previous_x, null_t> >
 {
-	// Last index is edge and has boundary condition
-	typedef TYPELIST_1(x_boundary) type;
+	typedef null_t type; // end of domain at x limit
 };
 
 template<typename previous_x, typename current_x, typename next_x>
 struct compute_wave<typelist<previous_x, typelist<current_x, next_x> > >
 {
 	typedef typelist<
-		typelist<NUMBER_MAKE(1), 
-		typename compute_wave_row<previous_x, current_x>::type::tail
+		typelist<NUMBER_MAKE(1), // boundary condition and rest of calculatin
+		typename compute_wave_row<previous_x, current_x>::type
 		>
 		,
 		typename compute_wave<typelist<current_x, next_x> >::type
@@ -102,13 +100,33 @@ struct wave2d<0> // save initial conditions
 template<unsigned timestep>
 struct wave2d
 {
-	typedef typename compute_wave<typename wave2d<timestep - 1>::type>::type type;
+	typedef typelist<x_boundary,
+		typename compute_wave<typename wave2d<timestep - 1>::type>::type> type;
 };
 
+struct grid_x
+{
+	template<unsigned index_i, unsigned index_j>
+	struct func
+	{
+		typedef NUMBER_MAKE(index_i* DX) type;
+	};
+};
 
+struct grid_y
+{
+	template<unsigned index_i, unsigned index_j>
+	struct func
+	{
+		typedef NUMBER_MAKE(index_j * DY) type;
+	};
+};
 
 int main()
 {
-	std::cout << "u0: " << value_printer2d<wave2d<0>::type>() << '\n';
-	std::cout << "u" << NT << ": " << value_printer2d<wave2d<NT>::type>() << '\n';
+	std::cout << "{\"u0\": " << value_printer2d<wave2d<0>::type>()
+		<< ",\n\"u" << NT << "\": " << value_printer2d<wave2d<NT>::type>()
+		<< ",\n\"x\": " << value_printer2d<for_ij<NX, NY, grid_x>::type>()
+		<< ",\n\"y\": " << value_printer2d<for_ij<NX, NY, grid_y>::type>()
+		<< "}";
 }
