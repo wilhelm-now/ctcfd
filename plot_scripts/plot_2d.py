@@ -15,23 +15,31 @@ def inform(*args, **kwargs):
 
 
 def do_plot(json_text, selections):
+    def plot_impl(x, y, z, title):
+        fig = plt.figure()
+        ax = fig.add_subplot(projection="3d")
+        ax.plot_surface(x, y, z, cmap="viridis")
+        ax.set_title(title)
+
     js = json.loads(json_text)
     inform("available keys: ", ", ".join(sorted(js.keys())))
 
     for selection in selections:
-        fig = plt.figure()
-        ax = fig.add_subplot(projection="3d")
-        f_key, x_key, y_key = selection
-        ax.plot_surface(
-            np.array(js[x_key]),
-            np.array(js[y_key]),
-            np.array(js[f_key]),
-            cmap="viridis")
-        ax.set_xlabel(x_key)
-        ax.set_ylabel(y_key)
-        ax.set_zlabel(f_key)
-        ax.set_title(f"{f_key}({x_key}, {y_key})")
 
+        f_key, x_key, y_key = selection
+        x_data = np.array(js[x_key])
+        y_data = np.array(js[y_key])
+        z_data = np.array(js[f_key])
+
+        z_shape = np.shape(z_data)
+        # hack, but allow data to be stored in grid layout with multiple values
+        if len(z_shape) == 3:
+            for idx in range(z_shape[-1]):
+                plot_impl(x_data, y_data, z_data[:, :, idx],
+                          f"{f_key}[:, :, {idx}]({x_key}, {y_key})")
+        else:
+            plot_impl(x_data, y_data, z_data,
+                      f"{f_key}({x_key}, {y_key})")
     plt.show()
 
 
@@ -53,6 +61,11 @@ def get_selections(expressions_list):
     return selections
 
 
+def print_shapes(content: dict):
+    for k, v in content.items():
+        print(k, np.shape(v))
+        print("\t", ", ".join(map(str, map(np.shape, v))))
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Script to plot 2d data in json format",
@@ -73,5 +86,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.quiet:
         VERBOSE = False
-
     do_plot(get_source(args.source), get_selections(args.expressions))
