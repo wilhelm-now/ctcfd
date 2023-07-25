@@ -2,6 +2,7 @@
 
 #include <util/typelist.h>
 #include <util/number.h>
+#include <util/point2d.h>
 
 #include <util/for_i.h>
 #include <util/conditional.h>
@@ -18,18 +19,16 @@
 struct initial
 {
 	template<unsigned index_i, unsigned index_j>
-	struct func
+	class func
 	{
 		typedef NUMBER_MAKE(
 			(0.5 <= DX * index_i && DX * index_i <= 1.0) && (0.5 <= DY * index_j && DY * index_j <= 1.0)
 			? 2.0 : 1.0)
-			type;
+			number;
+	public:
+		typedef point2d_c<number, number> type;
 	};
 };
-
-// Boundary conditions is u = 1 at each edge
-// X boundary saved here
-typedef ones<NX>::type x_boundary;
 
 // for just rows
 template<typename previous_row, typename current_row>
@@ -53,11 +52,16 @@ struct compute_convection_row<
 	typelist<ignored_previous, typelist<previous_x, next_previous_x> >,
 	typelist<previous_y, typelist<current, next> > >
 {
-	// u[t+1, i, j] = u[t, i, j] - (C*DT/DX)(u[t, i, j] - u[t, i-1, j]) - (C*DT/DY)(u[t, i, j] - u[t, i, j-1])
-	typedef typename NUMBER_MAKE(
-		NUMBER_GET_TYPE(current)
-		- (C * DT / DX) * (NUMBER_GET_TYPE(current) - NUMBER_GET_TYPE(previous_x))
-		- (C * DT / DY) * (NUMBER_GET_TYPE(current) - NUMBER_GET_TYPE(previous_y))) computed;
+	// u[t+1, i, j] = u[t, i, j] - u[t, i, j]*(DT/DX)*(u[t, i, j] - u[t, i-1, j]) - v[t, i, j]*(DT/DY)*(u[t, i, j] - u[t, i, j-1])
+	// v[t+1, i, j] = v[t, i, j] - u[t, i, j]*(DT/DX)*(v[t, i, j] - v[t, i-1, j]) - v[t, i, j]*(DT/DY)*(v[t, i, j] - v[t, i, j-1])
+	typedef typename POINT_MAKE(
+		POINT_GET_U(current)
+		- POINT_GET_U(current)*(DT / DX) * (POINT_GET_U(current) - POINT_GET_U(previous_x))
+		- POINT_GET_V(current)*(DT / DY) * (POINT_GET_U(current) - POINT_GET_U(previous_y)),
+		POINT_GET_V(current)
+		- POINT_GET_U(current)*(DT / DX) * (POINT_GET_V(current) - POINT_GET_V(previous_x))
+		- POINT_GET_V(current)*(DT/DY)*(POINT_GET_V(current) - POINT_GET_V(previous_y))
+	) computed;
 
 	typedef typelist<computed,
 		typename compute_convection_row<
@@ -80,7 +84,7 @@ template<typename previous_x, typename current_x, typename next_x>
 struct compute_convection<typelist<previous_x, typelist<current_x, next_x> > >
 {
 	typedef typelist<
-		typelist<NUMBER_MAKE(1), // boundary condition and rest of calculatin
+		typelist<POINT_MAKE(1, 1), // boundary condition and rest of calculatin
 		typename compute_convection_row<previous_x, current_x>::type
 		>
 		,
@@ -96,6 +100,10 @@ struct convection2d<0> // save initial conditions
 {
 	typedef for_ij<NX, NY, initial>::type type;
 };
+
+// Boundary conditions is u, v = 1 at each edge
+// X boundary saved here
+typedef convection2d<0>::type::head x_boundary;
 
 template<unsigned timestep>
 struct convection2d

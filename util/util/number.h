@@ -1,6 +1,8 @@
 #ifndef NUMBER_H
 #define NUMBER_H
 
+#include <iostream>
+
 #define NUMBER_SCALE (0x1000000ll) // 24 bits of decimals
 
 // Saves raw number in fixed point format
@@ -10,7 +12,15 @@ struct number_c
 	enum {raw_value = number};
 
 	double get() const { return raw_value * 1.0 / NUMBER_SCALE; }
+	
 };
+
+template<long long raw>
+std::ostream& operator<<(std::ostream& os, number_c<raw> number)
+{
+	return os << number.get();
+}
+
 
 // save a number in type
 #define NUMBER_MAKE(numb) number_c<static_cast<long long>((numb) * NUMBER_SCALE)>
