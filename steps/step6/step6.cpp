@@ -30,6 +30,26 @@ struct initial
 	};
 };
 
+// for just a point
+template<
+	typename previous_x, // u[t, i-1, j]
+	typename previous_y, // u[t, i,   j-1]
+	typename current     // u[t, i,   j]
+>
+struct compute_convection_point
+{
+	// u[t+1, i, j] = u[t, i, j] - u[t, i, j]*(DT/DX)*(u[t, i, j] - u[t, i-1, j]) - v[t, i, j]*(DT/DY)*(u[t, i, j] - u[t, i, j-1])
+	// v[t+1, i, j] = v[t, i, j] - u[t, i, j]*(DT/DX)*(v[t, i, j] - v[t, i-1, j]) - v[t, i, j]*(DT/DY)*(v[t, i, j] - v[t, i, j-1])
+	typedef typename POINT_MAKE(
+		POINT_GET_U(current)
+		- POINT_GET_U(current) * (DT / DX) * (POINT_GET_U(current) - POINT_GET_U(previous_x))
+		- POINT_GET_V(current) * (DT / DY) * (POINT_GET_U(current) - POINT_GET_U(previous_y)),
+		POINT_GET_V(current)
+		- POINT_GET_U(current) * (DT / DX) * (POINT_GET_V(current) - POINT_GET_V(previous_x))
+		- POINT_GET_V(current) * (DT / DY) * (POINT_GET_V(current) - POINT_GET_V(previous_y))
+	) type;
+};
+
 // for just rows
 template<typename previous_row, typename current_row>
 struct compute_convection_row;
@@ -52,23 +72,56 @@ struct compute_convection_row<
 	typelist<ignored_previous, typelist<previous_x, next_previous_x> >,
 	typelist<previous_y, typelist<current, next> > >
 {
-	// u[t+1, i, j] = u[t, i, j] - u[t, i, j]*(DT/DX)*(u[t, i, j] - u[t, i-1, j]) - v[t, i, j]*(DT/DY)*(u[t, i, j] - u[t, i, j-1])
-	// v[t+1, i, j] = v[t, i, j] - u[t, i, j]*(DT/DX)*(v[t, i, j] - v[t, i-1, j]) - v[t, i, j]*(DT/DY)*(v[t, i, j] - v[t, i, j-1])
-	typedef typename POINT_MAKE(
-		POINT_GET_U(current)
-		- POINT_GET_U(current)*(DT / DX) * (POINT_GET_U(current) - POINT_GET_U(previous_x))
-		- POINT_GET_V(current)*(DT / DY) * (POINT_GET_U(current) - POINT_GET_U(previous_y)),
-		POINT_GET_V(current)
-		- POINT_GET_U(current)*(DT / DX) * (POINT_GET_V(current) - POINT_GET_V(previous_x))
-		- POINT_GET_V(current)*(DT/DY)*(POINT_GET_V(current) - POINT_GET_V(previous_y))
-	) computed;
-
-	typedef typelist<computed,
+	typedef typelist<typename compute_convection_point<previous_x, previous_y, current>::type,
 		typename compute_convection_row<
 		typelist<previous_x, next_previous_x>,
 		typelist<current, next> >::type
 	> type;
 };
+
+#ifdef CTCFD_FASTTRACKED
+
+template<
+	TYPENAMES_9(px_y0, px_y1, px_y2, px_y3, px_y4, px_y5, px_y6, px_y7, px_tail), // previous x, varying y
+	TYPENAMES_9(cx_y0, cx_y1, cx_y2, cx_y3, cx_y4, cx_y5, cx_y6, cx_y7, cx_tail)> // current x, varying y
+struct compute_convection_row<
+	TAILED_TYPELIST_8(px_y0, px_y1, px_y2, px_y3, px_y4, px_y5, px_y6, px_y7, px_tail),
+	TAILED_TYPELIST_8(cx_y0, cx_y1, cx_y2, cx_y3, cx_y4, cx_y5, cx_y6, cx_y7, cx_tail) >
+{
+	typedef 
+	typelist<typename compute_convection_point<px_y1, cx_y0, cx_y1>::type,
+		typelist<typename compute_convection_point<px_y2, cx_y1, cx_y2>::type,
+			typelist<typename compute_convection_point<px_y3, cx_y2, cx_y3>::type,
+				typelist<typename compute_convection_point<px_y4, cx_y3, cx_y4>::type,
+					typelist<typename compute_convection_point<px_y5, cx_y4, cx_y5>::type,
+						typelist<typename compute_convection_point<px_y6, cx_y5, cx_y6>::type,
+							typelist<typename compute_convection_point<px_y7, cx_y6, cx_y7>::type,
+				typename compute_convection_row<
+							typelist<px_y7, px_tail>, 
+							typelist<cx_y7, cx_tail> >::type
+			> > > > > > > type;
+};
+
+
+template<
+	TYPENAMES_8(px_y0, px_y1, px_y2, px_y3, px_y4, px_y5, px_y6, px_y7), // previous x, varying y
+	TYPENAMES_8(cx_y0, cx_y1, cx_y2, cx_y3, cx_y4, cx_y5, cx_y6, cx_y7)> // current x, varying y
+struct compute_convection_row<
+	TYPELIST_8(px_y0, px_y1, px_y2, px_y3, px_y4, px_y5, px_y6, px_y7),
+	TYPELIST_8(cx_y0, cx_y1, cx_y2, cx_y3, cx_y4, cx_y5, cx_y6, cx_y7) >
+{
+	//typedef null_t type;
+	typedef typelist<typename compute_convection_point<px_y1, cx_y0, cx_y1>::type,
+				typelist<typename compute_convection_point<px_y2, cx_y1, cx_y2>::type,
+					typelist<typename compute_convection_point<px_y3, cx_y2, cx_y3>::type,
+						typelist<typename compute_convection_point<px_y4, cx_y3, cx_y4>::type,
+							typelist<typename compute_convection_point<px_y5, cx_y4, cx_y5>::type,
+								typelist<typename compute_convection_point<px_y6, cx_y5, cx_y6>::type,
+									typelist<typename compute_convection_point<px_y7, cx_y6, cx_y7>::type,
+		null_t> > > > > > > type;
+};
+
+#endif // CTCFD_FASTTRACKED
 
 // computation for entire domain
 template<typename values>

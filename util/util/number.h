@@ -1,7 +1,7 @@
 #ifndef NUMBER_H
 #define NUMBER_H
 
-#include <iostream>
+#include <ostream>
 
 #define NUMBER_SCALE (0x1000000ll) // 24 bits of decimals
 

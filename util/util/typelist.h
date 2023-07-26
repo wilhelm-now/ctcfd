@@ -30,6 +30,25 @@ struct typelist
 #define TYPELIST_15(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15) typelist<T1, TYPELIST_14(T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15) >
 #define TYPELIST_16(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16) typelist<T1, TYPELIST_15(T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16) >
 
+#define TAILED_TYPELIST_1(T1, Tail) typelist<T1, Tail>
+#define TAILED_TYPELIST_2(T1, T2, Tail) typelist<T1, TAILED_TYPELIST_1(T2, Tail) >
+#define TAILED_TYPELIST_3(T1, T2, T3, Tail) typelist<T1, TAILED_TYPELIST_2(T2, T3, Tail) >
+#define TAILED_TYPELIST_4(T1, T2, T3, T4, Tail) typelist<T1, TAILED_TYPELIST_3(T2, T3, T4, Tail) >
+#define TAILED_TYPELIST_5(T1, T2, T3, T4, T5, Tail) typelist<T1, TAILED_TYPELIST_4(T2, T3, T4, T5, Tail) >
+#define TAILED_TYPELIST_6(T1, T2, T3, T4, T5, T6, Tail) typelist<T1, TAILED_TYPELIST_5(T2, T3, T4, T5, T6, Tail) >
+#define TAILED_TYPELIST_7(T1, T2, T3, T4, T5, T6, T7, Tail) typelist<T1, TAILED_TYPELIST_6(T2, T3, T4, T5, T6, T7, Tail) >
+#define TAILED_TYPELIST_8(T1, T2, T3, T4, T5, T6, T7, T8, Tail) typelist<T1, TAILED_TYPELIST_7(T2, T3, T4, T5, T6, T7, T8, Tail) >
+
+#define TYPENAMES_1(T1) typename T1
+#define TYPENAMES_2(T1, T2) typename T1, TYPENAMES_1(T2)
+#define TYPENAMES_3(T1, T2, T3) typename T1, TYPENAMES_2(T2, T3)
+#define TYPENAMES_4(T1, T2, T3, T4) typename T1, TYPENAMES_3(T2, T3, T4)
+#define TYPENAMES_5(T1, T2, T3, T4, T5) typename T1, TYPENAMES_4(T2, T3, T4, T5)
+#define TYPENAMES_6(T1, T2, T3, T4, T5, T6) typename T1, TYPENAMES_5(T2, T3, T4, T5, T6)
+#define TYPENAMES_7(T1, T2, T3, T4, T5, T6, T7) typename T1, TYPENAMES_6(T2, T3, T4, T5, T6, T7)
+#define TYPENAMES_8(T1, T2, T3, T4, T5, T6, T7, T8) typename T1, TYPENAMES_7(T2, T3, T4, T5, T6, T7, T8)
+#define TYPENAMES_9(T1, T2, T3, T4, T5, T6, T7, T8, T9) typename T1, TYPENAMES_8(T2, T3, T4, T5, T6, T7, T8, T9)
+
 namespace tl
 {
 	// Indexed access
