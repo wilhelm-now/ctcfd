@@ -2,6 +2,7 @@
 
 #include <util/typelist.h>
 #include <util/number.h>
+#include <util/point2d.h>
 
 #include <util/for_i.h>
 #include <util/conditional.h>
@@ -18,27 +19,47 @@
 struct initial
 {
 	template<unsigned index_i, unsigned index_j>
-	struct func
+	class func
 	{
 		typedef NUMBER_MAKE(
 			(0.5 <= DX * index_i && DX * index_i <= 1.0) && (0.5 <= DY * index_j && DY * index_j <= 1.0)
 			? 2.0 : 1.0)
-			type;
+			number;
+	public:
+		typedef point2d_c<number, number> type;
 	};
 };
 
 // for just a point
 template<TYPENAMES_5(px, nx, current, py, ny)> // previous and next x, current, previous and next y
-struct compute_burgers_point
+class compute_burgers_point
 {
 	// u[t+1, i, j] = u[t, i, j] 
+	//               - (DT/DX)*(u[t, i, j])*(u[t, i, j] - u[t, i-i, j])
+	//               - (DT/DY)*(v[t, i, j])*(u[t, i, j] - u[t, i, j-1])
 	//               + (NU*DT/(DX^2))*(u[t, i+1, j] - 2*u[t, i, j] + u[t, i-1, j])
 	//               + (NU*DT/(DY^2))*(u[t, i, j+1] - 2*u[t, i, j] + u[t, i, j-1])
+	// v[t+1, i, j] = v[t, i, j]
+	//               - (DT/DX)*(u[t, i, j])*(v[t, i, j] - v[t, i-1, j])
+	//               - (DT/DY)*(v[t, i, j])*(v[t, i, j] - v[t, i, j-1])
+	//               + (NU*DT/(DX^2))*(v[t, i+1, j] - 2*v[t, i, j] + v[t, i-1, j])
+	//               + (NU*DT/(DX^2))*(v[t, i, j+1] - 2*v[t, i, j] + v[t, i, j-1])
 	typedef typename NUMBER_MAKE(
-		NUMBER_GET_TYPE(current)
-		+ (NU*DT/(DX*DX))*(NUMBER_GET_TYPE(nx) - 2*NUMBER_GET_TYPE(current) + NUMBER_GET_TYPE(px))
-		+ (NU*DT/(DY*DY))*(NUMBER_GET_TYPE(ny) - 2*NUMBER_GET_TYPE(current) + NUMBER_GET_TYPE(py))
-	) type;
+		POINT_GET_U(current)
+		- (DT/DX)*(POINT_GET_U(current))*(POINT_GET_U(current) - POINT_GET_U(px))
+		- (DT/DY)*(POINT_GET_V(current))*(POINT_GET_U(current) - POINT_GET_U(py))
+		+ (NU*DT/(DX*DX))*(POINT_GET_U(nx) - 2* POINT_GET_U(current) + POINT_GET_U(px))
+		+ (NU*DT/(DY*DY))*(POINT_GET_U(ny) - 2* POINT_GET_U(current) + POINT_GET_U(py))
+	) u;
+	typedef typename NUMBER_MAKE(
+		POINT_GET_V(current)
+		- (DT/DX)*(POINT_GET_U(current))*(POINT_GET_V(current) - POINT_GET_V(px))
+		- (DT/DY)*(POINT_GET_V(current))*(POINT_GET_V(current) - POINT_GET_V(py))
+		+ (NU*DT/(DX*DX))*(POINT_GET_V(nx) - 2*POINT_GET_V(current) + POINT_GET_V(px))
+		+ (NU*DT/(DY*DY))*(POINT_GET_V(ny) - 2*POINT_GET_V(current) + POINT_GET_V(py))
+	) v;
+public:
+	typedef point2d_c<u, v> type;
 };
 
 // for just rows
@@ -57,8 +78,7 @@ struct compute_burgers_row <
 	TYPELIST_2(nxpy, nxcy)
 >
 {
-	//typedef NUMBER_MAKE(1.0) type; // end of domain at y limit
-	typedef TYPELIST_1(NUMBER_MAKE(1.0)) type;
+	typedef TYPELIST_1(POINT_MAKE(1, 1)) type;
 };
 
 template<
@@ -95,7 +115,7 @@ template<typename previous_x, typename current_x, typename next_x, typename x_ta
 struct compute_burgers<TAILED_TYPELIST_3(previous_x, current_x, next_x, x_tail)>
 {
 	typedef typelist<
-		typelist<NUMBER_MAKE(1), // boundary condition and rest of calculatin
+		typelist<POINT_MAKE(1, 1), // boundary condition and rest of calculatin
 		typename compute_burgers_row<previous_x, current_x, next_x>::type
 		>
 		,

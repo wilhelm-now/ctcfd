@@ -1,8 +1,8 @@
-set(NX 31)
-set(NY 31)
-set(NT 100)
-set(NU 0.05)
-set(SIGMA 0.25)
+set(NX 41)
+set(NY 41)
+set(NT 120)
+set(NU 0.01)
+set(SIGMA 0.009)
 
 configure_file(
 	${CMAKE_CURRENT_SOURCE_DIR}/step8_params.h.in 
