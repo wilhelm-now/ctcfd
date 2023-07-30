@@ -1,6 +1,6 @@
 set(NX 31)
 set(NY 31)
-set(NT 17)
+set(NT 100)
 set(NU 0.05)
 set(SIGMA 0.25)
 

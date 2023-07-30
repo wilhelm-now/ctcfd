@@ -45,13 +45,20 @@ struct compute_diffusion_point
 template<typename previous_x_row, typename current_x_row, typename next_x_row>
 struct compute_diffusion_row;
 
-template<typename previous_x_values, typename current_x_previous_y, typename current_x, typename next_x_row>
-struct compute_diffusion_row<
-	previous_x_values, 
-	typelist<current_x_previous_y, typelist<current_x, null_t> >,
-	next_x_row>
+// Specialization to apply boundary condition on y limit
+template<
+	TYPENAMES_2(pxpy, pxcy), // u[t, i-1, j-1], u[t, i-1, j]
+	TYPENAMES_2(cxpy, cxcy), // u[t, i, j-1], u[t, i, j]
+	TYPENAMES_2(nxpy, nxcy)  // u[t, i+1, j-1], u[[t, i+1, j]
+>
+struct compute_diffusion_row <
+	TYPELIST_2(pxpy, pxcy),
+	TYPELIST_2(cxpy, cxcy),
+	TYPELIST_2(nxpy, nxcy)
+>
 {
-	typedef null_t type; // end of domain at y limit
+	//typedef NUMBER_MAKE(1.0) type; // end of domain at y limit
+	typedef TYPELIST_1(NUMBER_MAKE(1.0)) type;
 };
 
 template<
@@ -66,7 +73,7 @@ struct compute_diffusion_row<
 >
 {
 	typedef typelist<
-		typename compute_diffusion_point<pxcy, nxcy, cxcy, cxpy, cxny_tail::head>::type,
+		typename compute_diffusion_point<pxcy, nxcy, cxcy, cxpy, typename cxny_tail::head>::type,
 		typename compute_diffusion_row<
 			typelist<pxcy, pxny_tail>,
 			typelist<cxcy, cxny_tail>,
@@ -81,7 +88,7 @@ struct compute_diffusion;
 template<typename previous_x, typename current_x>
 struct compute_diffusion<typelist<previous_x, typelist<current_x, null_t> > >
 {
-	typedef null_t type; // end of domain at x limit
+	typedef TYPELIST_1(current_x) type; // end of domain at x limit
 };
 
 template<typename previous_x, typename current_x, typename next_x, typename x_tail>
