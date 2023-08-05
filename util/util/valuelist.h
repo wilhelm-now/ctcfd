@@ -46,6 +46,25 @@ struct value_printer<typelist<T, null_t> >
 	}
 };
 
+template<TYPENAMES_6(T1, T2, T3, T4, head, tail)>
+struct value_printer<TAILED_TYPELIST_5(T1, T2, T3, T4, head, tail)>
+{
+	friend std::ostream& operator<<(std::ostream& os, value_printer)
+	{
+		return os << T1() << ", " << T2() << ", " << T3() << ", " << T4() << ", " << value_printer<TAILED_TYPELIST_1(head, tail)>();
+	}
+};
+
+template<TYPENAMES_18(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, head, tail)>
+struct value_printer<TAILED_TYPELIST_17(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, head, tail)>
+{
+	friend std::ostream& operator<<(std::ostream& os, value_printer)
+	{
+		os << T1() << ", " << T2() << ", " << T3() << ", " << T4() << ", " << T5() << ", " << T6() << ", " << T7() << ", " << T8() << ", " << T9() << ", " << T10() << ", " << T11() << ", " << T12() << ", " << T13() << ", " << T14() << ", " << T15() << ", " << T16();
+		return os << ", " << value_printer<TAILED_TYPELIST_1(head, tail)>();
+	}
+};
+
 namespace detail
 {
 	template<typename values>
@@ -67,6 +86,28 @@ namespace detail
 		friend std::ostream& operator<<(std::ostream& os, value_printer2d_impl)
 		{
 			return os << '[' << value_printer<Head>() << ']';
+		}
+	};
+
+	template<TYPENAMES_6(T1, T2, T3, T4, head, tail)>
+	struct value_printer2d_impl<TAILED_TYPELIST_5(T1, T2, T3, T4, head, tail)>
+	{
+		friend std::ostream& operator<<(std::ostream& os, value_printer2d_impl)
+		{
+			return os << '[' << value_printer<T1>() << "],\n[" << value_printer<T2>() << "],\n[" << value_printer<T3>() << "],\n[" << value_printer<T4>() << "],\n" << value_printer2d_impl<TAILED_TYPELIST_1(head, tail)>();
+		}
+	};
+
+	template<TYPENAMES_18(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, head, tail)>
+	struct value_printer2d_impl<TAILED_TYPELIST_17(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, head, tail)>
+	{
+		friend std::ostream& operator<<(std::ostream& os, value_printer2d_impl)
+		{
+			return os << '[' << value_printer<T1>() << "],\n[" << value_printer<T2>() << "],\n[" << value_printer<T3>() << "],\n[" << value_printer<T4>()
+				<< "],\n[" << value_printer<T5>() << "],\n[" << value_printer<T6>() << "],\n[" << value_printer<T7>() << "],\n[" << value_printer<T8>()
+				<< "],\n[" << value_printer<T9>() << "],\n[" << value_printer<T10>() << "],\n[" << value_printer<T11>() << "],\n[" << value_printer<T12>()
+				<< "],\n[" << value_printer<T13>() << "],\n[" << value_printer<T14>() << "],\n[" << value_printer<T15>() << "],\n[" << value_printer<T16>()
+				<< "],\n" << value_printer2d_impl<TAILED_TYPELIST_1(head, tail)>();
 		}
 	};
 }
