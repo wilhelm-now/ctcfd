@@ -1,0 +1,7 @@
+// grid sizing
+#cmakedefine NX @NX@
+#cmakedefine NY @NY@
+
+#define DX (2.0 / (NX - 1))
+// Note smaller Y domain
+#define DY (1.0 / (NY - 1))
