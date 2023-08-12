@@ -16,7 +16,10 @@ struct far_func
 	template<unsigned index_j>
 	struct func
 	{
-		typedef NUMBER_MAKE(index_j* DY) type;
+		// Special cases for dp/dy = 0 boundary condition
+		// So use adjacent inner index for value instead of plain index_j*DY
+		// First at y=0, then at y=limit, then normal.
+		typedef NUMBER_MAKE((index_j == 0) ? 1 * DY : (index_j == (NY - 1)) ? (NY - 2) * DY : index_j * DY) type;
 	};
 };
 
