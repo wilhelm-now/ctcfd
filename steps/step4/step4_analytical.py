@@ -6,7 +6,7 @@ try:
     HAS_SYMPY = True
 except ImportError:
     HAS_SYMPY = False
-    from math import exp
+    from math import exp, pi
 
 import argparse
 

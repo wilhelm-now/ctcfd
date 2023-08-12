@@ -54,7 +54,7 @@ struct compute_wave_row<
 	typelist<previous_y, typelist<current, next> > >
 {
 	// u[t+1, i, j] = u[t, i, j] - (C*DT/DX)(u[t, i, j] - u[t, i-1, j]) - (C*DT/DY)(u[t, i, j] - u[t, i, j-1])
-	typedef typename NUMBER_MAKE(
+	typedef NUMBER_MAKE(
 		NUMBER_GET_TYPE(current) 
 		- (C*DT/DX)*(NUMBER_GET_TYPE(current) - NUMBER_GET_TYPE(previous_x)) 
 		- (C*DT/DY)*(NUMBER_GET_TYPE(current) - NUMBER_GET_TYPE(previous_y))) computed;

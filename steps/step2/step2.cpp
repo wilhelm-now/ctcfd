@@ -22,7 +22,7 @@ template<typename previous, typename current>
 class compute_convection<typelist<previous, current> >
 {
 	// shoulde be u[i] - u[i]*(DT/DX)*(u[i] - u[i-1])
-	typedef typename NUMBER_MAKE(NUMBER_GET_TYPE(current::head) - NUMBER_GET_TYPE(current::head) * (DT * 1.0 / DX) * (NUMBER_GET_TYPE(current::head) - NUMBER_GET_TYPE(previous))) computed;
+	typedef NUMBER_MAKE(NUMBER_GET_TYPE(current::head) - NUMBER_GET_TYPE(current::head) * (DT * 1.0 / DX) * (NUMBER_GET_TYPE(current::head) - NUMBER_GET_TYPE(previous))) computed;
 public:
 	typedef typelist<computed, typename compute_convection<current>::type> type;
 };

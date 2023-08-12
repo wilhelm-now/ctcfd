@@ -40,7 +40,7 @@ struct compute_convection_point
 {
 	// u[t+1, i, j] = u[t, i, j] - u[t, i, j]*(DT/DX)*(u[t, i, j] - u[t, i-1, j]) - v[t, i, j]*(DT/DY)*(u[t, i, j] - u[t, i, j-1])
 	// v[t+1, i, j] = v[t, i, j] - u[t, i, j]*(DT/DX)*(v[t, i, j] - v[t, i-1, j]) - v[t, i, j]*(DT/DY)*(v[t, i, j] - v[t, i, j-1])
-	typedef typename POINT_MAKE(
+	typedef POINT_MAKE(
 		POINT_GET_U(current)
 		- POINT_GET_U(current) * (DT / DX) * (POINT_GET_U(current) - POINT_GET_U(previous_x))
 		- POINT_GET_V(current) * (DT / DY) * (POINT_GET_U(current) - POINT_GET_U(previous_y)),

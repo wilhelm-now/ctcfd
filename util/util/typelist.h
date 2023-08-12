@@ -115,13 +115,13 @@ namespace tl
 	template<typename head, typename T>
 	struct append<typelist<head, null_t>, T>
 	{
-		typedef typename TYPELIST_2(head, T) type;
+		typedef TYPELIST_2(head, T) type;
 	};
 
 	template<typename head, typename tail, typename T>
 	struct append<typelist<head, tail>, T>
 	{
-		typedef typename typelist<head, typename append<tail, T>::type> type;
+		typedef typelist<head, typename append<tail, T>::type> type;
 	};
 }
 

@@ -44,14 +44,14 @@ class compute_burgers_point
 	//               - (DT/DY)*(v[t, i, j])*(v[t, i, j] - v[t, i, j-1])
 	//               + (NU*DT/(DX^2))*(v[t, i+1, j] - 2*v[t, i, j] + v[t, i-1, j])
 	//               + (NU*DT/(DX^2))*(v[t, i, j+1] - 2*v[t, i, j] + v[t, i, j-1])
-	typedef typename NUMBER_MAKE(
+	typedef NUMBER_MAKE(
 		POINT_GET_U(current)
 		- (DT/DX)*(POINT_GET_U(current))*(POINT_GET_U(current) - POINT_GET_U(px))
 		- (DT/DY)*(POINT_GET_V(current))*(POINT_GET_U(current) - POINT_GET_U(py))
 		+ (NU*DT/(DX*DX))*(POINT_GET_U(nx) - 2* POINT_GET_U(current) + POINT_GET_U(px))
 		+ (NU*DT/(DY*DY))*(POINT_GET_U(ny) - 2* POINT_GET_U(current) + POINT_GET_U(py))
 	) u;
-	typedef typename NUMBER_MAKE(
+	typedef NUMBER_MAKE(
 		POINT_GET_V(current)
 		- (DT/DX)*(POINT_GET_U(current))*(POINT_GET_V(current) - POINT_GET_V(px))
 		- (DT/DY)*(POINT_GET_V(current))*(POINT_GET_V(current) - POINT_GET_V(py))

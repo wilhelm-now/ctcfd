@@ -34,7 +34,7 @@ struct compute_diffusion_point
 	// u[t+1, i, j] = u[t, i, j] 
 	//               + (NU*DT/(DX^2))*(u[t, i+1, j] - 2*u[t, i, j] + u[t, i-1, j])
 	//               + (NU*DT/(DY^2))*(u[t, i, j+1] - 2*u[t, i, j] + u[t, i, j-1])
-	typedef typename NUMBER_MAKE(
+	typedef NUMBER_MAKE(
 		NUMBER_GET_TYPE(current)
 		+ (NU*DT/(DX*DX))*(NUMBER_GET_TYPE(nx) - 2*NUMBER_GET_TYPE(current) + NUMBER_GET_TYPE(px))
 		+ (NU*DT/(DY*DY))*(NUMBER_GET_TYPE(ny) - 2*NUMBER_GET_TYPE(current) + NUMBER_GET_TYPE(py))

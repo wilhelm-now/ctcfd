@@ -16,19 +16,19 @@ template<typename previous, typename current>
 struct compute_diffusion<typelist<previous, typelist<current, null_t> > >
 {
 	// RHS boundary stops computation and enforces boundary condition
-	typedef typename TYPELIST_1(NUMBER_MAKE(1.0)) type;
+	typedef TYPELIST_1(NUMBER_MAKE(1.0)) type;
 };
 
 template<typename previous, typename current, typename next>
 class compute_diffusion<typelist<previous, typelist<current, next> > >
 {
 	// u[next_t, current_idx] = u[current_t, current_idx] + (NU*DT/(DX*DX))*(u[current_t, next_idx] - 2*u[current_t, current_idx] + u[current_t, previous_idx])
-	typedef typename NUMBER_MAKE(NUMBER_GET_TYPE(current) + (NU*DT/(DX*DX)) *
+	typedef NUMBER_MAKE(NUMBER_GET_TYPE(current) + (NU*DT/(DX*DX)) *
 		(NUMBER_GET_TYPE(next::head) - 2*NUMBER_GET_TYPE(current) + NUMBER_GET_TYPE(previous))
 	)
 		computed;
 public:
-	typedef typelist<computed, typename compute_diffusion<typename typelist<current, next> >::type> type;
+	typedef typelist<computed, typename compute_diffusion<typelist<current, next> >::type> type;
 };
 
 // diffusion

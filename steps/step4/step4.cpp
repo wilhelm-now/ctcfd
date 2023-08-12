@@ -19,7 +19,7 @@ struct compute_burgers_point
 			- u[current_t, current_idx] * (DT/DX) * (u[current_t, current_idx] - u[current_t, previous_idx]
 			+ (NU * DT / (DX * DX)) * (u[current_t, next_idx] - 2 * u[current_t, current_idx] + u[current_t, previous_idx])
 	*/
-	typedef typename NUMBER_MAKE(NUMBER_GET_TYPE(current)
+	typedef NUMBER_MAKE(NUMBER_GET_TYPE(current)
 		- NUMBER_GET_TYPE(current) * (DT / DX) * (NUMBER_GET_TYPE(current) - NUMBER_GET_TYPE(previous))
 		+ (NU * DT / (DX * DX)) * (NUMBER_GET_TYPE(next) - 2 * NUMBER_GET_TYPE(current) + NUMBER_GET_TYPE(previous))
 	)
@@ -42,7 +42,7 @@ class compute_burgers<typelist<previous, typelist<current, next> > >
 {
 	typedef typename compute_burgers_point<previous, current, typename next::head>::type computed;
 public:
-	typedef typelist<computed, typename compute_burgers<typename typelist<current, next> >::type> type;
+	typedef typelist<computed, typename compute_burgers<typelist<current, next> >::type> type;
 };
 
 // burgers 
