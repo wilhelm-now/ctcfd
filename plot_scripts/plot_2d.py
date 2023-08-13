@@ -15,11 +15,17 @@ def inform(*args, **kwargs):
 
 
 def do_plot(json_text, selections):
-    def plot_impl(x, y, z, title):
+    def plot_impl(x, y, z, title, x_label=None, y_label=None, z_label=None):
         fig = plt.figure()
         ax = fig.add_subplot(projection="3d")
         ax.plot_surface(x, y, z, cmap="viridis")
         ax.set_title(title)
+        if x_label is not None:
+            ax.set_xlabel(x_label)
+        if y_label is not None:
+            ax.set_ylabel(y_label)
+        if z_label is not None:
+            ax.set_zlabel(z_label)
 
     js = json.loads(json_text)
     inform("available keys: ", ", ".join(sorted(js.keys())))
@@ -36,10 +42,13 @@ def do_plot(json_text, selections):
         if len(z_shape) == 3:
             for idx in range(z_shape[-1]):
                 plot_impl(x_data, y_data, z_data[:, :, idx],
-                          f"{f_key}[:, :, {idx}]({x_key}, {y_key})")
+                          f"{f_key}[:, :, {idx}]({x_key}, {y_key})",
+                          x_label=x_key, y_label=y_key)
         else:
             plot_impl(x_data, y_data, z_data,
-                      f"{f_key}({x_key}, {y_key})")
+                      f"{f_key}({x_key}, {y_key})",
+                      x_label=x_key, y_label=y_key, z_label=f_key)
+
     plt.show()
 
 
