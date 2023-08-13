@@ -78,7 +78,12 @@ public:
 	typedef typelist<computed,
 		typename compute_laplace_row<
 		TAILED_TYPELIST_2(pxcy, pxny, pxtaily),
+#ifdef CTCFD_LAPLACE_GAUSS_SEIDEL
+		// Mimic gauss-seidel iterations instead of jacobi iterations by using computed for following values
+		TAILED_TYPELIST_2(computed, cxny, cxtaily),
+#else
 		TAILED_TYPELIST_2(cxcy, cxny, cxtaily),
+#endif
 		TAILED_TYPELIST_2(nxcy, nxny, nxtaily)>::type > type;
 };
 
@@ -97,9 +102,14 @@ class compute_laplace<TAILED_TYPELIST_3(previous_x_row, current_x_row, next_x_ro
 {
 	typedef typename compute_laplace_row<previous_x_row, current_x_row, next_x_row>::type computed_row;
 public:
-	typedef typelist<
-		typelist<typename computed_row::head, computed_row>, // repeat computed_row::head to enfore dp/dy = 0 at y=minimum
-		typename compute_laplace<TAILED_TYPELIST_2(current_x_row, next_x_row, further_x)>::type> type;
+	typedef typelist<result,
+#ifdef CTCFD_LAPLACE_GAUSS_SEIDEL
+		// Mimic gauss-seidel iterations instead of jacobi iterations by using computed for following values
+		typename compute_laplace<TAILED_TYPELIST_2(result, next_x_row, further_x)>::type>
+#else
+		typename compute_laplace<TAILED_TYPELIST_2(current_x_row, next_x_row, further_x)>::type>
+#endif
+		type;
 };
 
 template<unsigned iteration>

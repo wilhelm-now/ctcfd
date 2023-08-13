@@ -9,3 +9,8 @@ configure_file(
 add_executable(step9 step9.cpp ${CMAKE_CURRENT_BINARY_DIR}/step9_params.h)
 target_include_directories(step9 PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(step9 util)
+
+add_executable(step9-gs step9.cpp ${CMAKE_CURRENT_BINARY_DIR}/step9_params.h)
+target_include_directories(step9-gs PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_link_libraries(step9-gs util)
+target_compile_definitions(step9-gs PUBLIC CTCFD_LAPLACE_GAUSS_SEIDEL)
