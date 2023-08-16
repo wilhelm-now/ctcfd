@@ -11,17 +11,136 @@ struct for_ij;
 
 namespace detail
 {
-	template<typename function, unsigned length, unsigned index, bool valid = index < length>
-	struct for_i_impl
-	{
-		typedef typelist<typename function::template func<index>::type,
-			typename for_i_impl<function, length, index + 1, index + 1 < length > ::type> type;
-	};
+	// A for_i_track is an actual (fast) implementation of some loops
+	template<unsigned>
+	struct for_i_track
+	{};
 
 	template<typename function, unsigned length, unsigned index>
-	struct for_i_impl<function, length, index, false>
+	class for_i_impl
 	{
-		typedef null_t type;
+		enum {
+			remaining = length - index
+		};
+		enum {
+			track = remaining > 32 ? 4 : remaining > 16 ? 3 : remaining > 8 ? 2 : remaining >= 1 ? 1 : 0
+		};
+	public:
+		typedef typename for_i_track<track>::template func<function, length, index>::type type;
+	};
+
+	template<>
+	struct for_i_track<0>
+	{
+		template<typename function, unsigned length, unsigned index>
+		struct func
+		{
+			typedef null_t type;
+		};
+	};
+
+	template<>
+	struct for_i_track<1>
+	{
+		template<typename function, unsigned length, unsigned index>
+		struct func
+		{
+			typedef typelist<typename function::template func<index>::type,
+				typename for_i_impl<function, length, index + 1>::type> type;
+		};
+	};
+
+	// first fast-track of for-i loop.
+	template<>
+	struct for_i_track<2>
+	{
+		template<typename function, unsigned length, unsigned index>
+		struct func
+		{
+			typedef
+				typelist<typename function::template func<index + 0>::type,
+				typelist<typename function::template func<index + 1>::type,
+				typelist<typename function::template func<index + 2>::type,
+				typelist<typename function::template func<index + 3>::type,
+				typelist<typename function::template func<index + 4>::type,
+				typelist<typename function::template func<index + 5>::type,
+				typelist<typename function::template func<index + 6>::type,
+				typelist<typename function::template func<index + 7>::type,
+				typename for_i_impl<function, length, index + 8>::type
+				> > > > > > > > type;
+		};
+	};
+
+	template<>
+	struct for_i_track<3>
+	{
+		template<typename function, unsigned length, unsigned index>
+		struct func
+		{
+			typedef
+				typelist<typename function::template func<index + 0>::type,
+				typelist<typename function::template func<index + 1>::type,
+				typelist<typename function::template func<index + 2>::type,
+				typelist<typename function::template func<index + 3>::type,
+				typelist<typename function::template func<index + 4>::type,
+				typelist<typename function::template func<index + 5>::type,
+				typelist<typename function::template func<index + 6>::type,
+				typelist<typename function::template func<index + 7>::type,
+				typelist<typename function::template func<index + 8>::type,
+				typelist<typename function::template func<index + 9>::type,
+				typelist<typename function::template func<index + 10>::type,
+				typelist<typename function::template func<index + 11>::type,
+				typelist<typename function::template func<index + 12>::type,
+				typelist<typename function::template func<index + 13>::type,
+				typelist<typename function::template func<index + 14>::type,
+				typelist<typename function::template func<index + 15>::type,
+				typename for_i_impl<function, length, index + 16>::type
+				> > > > > > > > > > > > > > > > type;
+		};
+	};
+
+	template<>
+	struct for_i_track<4>
+	{
+		template<typename function, unsigned length, unsigned index>
+		struct func
+		{
+			typedef
+				typelist<typename function::template func<index + 0>::type,
+				typelist<typename function::template func<index + 1>::type,
+				typelist<typename function::template func<index + 2>::type,
+				typelist<typename function::template func<index + 3>::type,
+				typelist<typename function::template func<index + 4>::type,
+				typelist<typename function::template func<index + 5>::type,
+				typelist<typename function::template func<index + 6>::type,
+				typelist<typename function::template func<index + 7>::type,
+				typelist<typename function::template func<index + 8>::type,
+				typelist<typename function::template func<index + 9>::type,
+				typelist<typename function::template func<index + 10>::type,
+				typelist<typename function::template func<index + 11>::type,
+				typelist<typename function::template func<index + 12>::type,
+				typelist<typename function::template func<index + 13>::type,
+				typelist<typename function::template func<index + 14>::type,
+				typelist<typename function::template func<index + 15>::type,
+				typelist<typename function::template func<index + 16>::type,
+				typelist<typename function::template func<index + 17>::type,
+				typelist<typename function::template func<index + 18>::type,
+				typelist<typename function::template func<index + 19>::type,
+				typelist<typename function::template func<index + 20>::type,
+				typelist<typename function::template func<index + 21>::type,
+				typelist<typename function::template func<index + 22>::type,
+				typelist<typename function::template func<index + 23>::type,
+				typelist<typename function::template func<index + 24>::type,
+				typelist<typename function::template func<index + 25>::type,
+				typelist<typename function::template func<index + 26>::type,
+				typelist<typename function::template func<index + 27>::type,
+				typelist<typename function::template func<index + 28>::type,
+				typelist<typename function::template func<index + 29>::type,
+				typelist<typename function::template func<index + 30>::type,
+				typelist<typename function::template func<index + 31>::type,
+				typename for_i_impl<function, length, index + 32>::type
+				> > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > type;
+		};
 	};
 
 	template<unsigned first_arg, class two_arg_function>
