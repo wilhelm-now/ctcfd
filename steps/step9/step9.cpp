@@ -1,4 +1,7 @@
 #include "step9_params.h"
+#ifdef CTCFD_LAPLACE_SOR
+#include "step9_sor_omega.h"
+#endif
 
 #include <util/for_i.h>
 
@@ -57,10 +60,18 @@ class compute_laplace_row<
 	TYPELIST_3(nxpy, nxcy, nxny)>
 {
 	typedef typename compute_laplace_point<pxcy, nxcy, cxpy, cxny>::type computed;
+#if defined(CTCFD_LAPLACE_SOR)
+	typedef NUMBER_MAKE((1 - CTCFD_LAPLACE_SOR_OMEGA) * NUMBER_GET_TYPE(computed) + CTCFD_LAPLACE_SOR_OMEGA * NUMBER_GET_TYPE(computed)) sor_computed;
+#endif
+
 public:
 	// Repeating computed enforces dp/dy = 0 at y=limit
 	// Also stops recursion
+#if defined(CTCFD_LAPLACE_SOR)
+	typedef TYPELIST_2(sor_computed, sor_computed) type;
+#else
 	typedef TYPELIST_2(computed, computed) type;
+#endif
 };
 
 template<
@@ -78,12 +89,15 @@ public:
 	typedef typelist<computed,
 		typename compute_laplace_row<
 		TAILED_TYPELIST_2(pxcy, pxny, pxtaily),
-#ifdef CTCFD_LAPLACE_GAUSS_SEIDEL
+#if defined(CTCFD_LAPLACE_GAUSS_SEIDEL)
 		// Mimic gauss-seidel iterations instead of jacobi iterations by using computed for following values
 		TAILED_TYPELIST_2(computed, cxny, cxtaily),
+#elif defined(CTCFD_LAPLACE_SOR)
+		TAILED_TYPELIST_2(NUMBER_MAKE((1 - CTCFD_LAPLACE_SOR_OMEGA)*NUMBER_GET_TYPE(cxcy) + CTCFD_LAPLACE_SOR_OMEGA*NUMBER_GET_TYPE(computed)), cxny, cxtaily),
 #else
 		TAILED_TYPELIST_2(cxcy, cxny, cxtaily),
 #endif
+		// finally tail
 		TAILED_TYPELIST_2(nxcy, nxny, nxtaily)>::type > type;
 };
 
@@ -101,9 +115,10 @@ template<typename previous_x_row, typename current_x_row, typename next_x_row, t
 class compute_laplace<TAILED_TYPELIST_3(previous_x_row, current_x_row, next_x_row, further_x)>
 {
 	typedef typename compute_laplace_row<previous_x_row, current_x_row, next_x_row>::type computed_row;
+	typedef typelist<typename computed_row::head, computed_row> result; // repeat computed_row::head to enfore dp/dy = 0 at y=minimum
 public:
 	typedef typelist<result,
-#ifdef CTCFD_LAPLACE_GAUSS_SEIDEL
+#if defined(CTCFD_LAPLACE_GAUSS_SEIDEL) || defined(CTCFD_LAPLACE_SOR)
 		// Mimic gauss-seidel iterations instead of jacobi iterations by using computed for following values
 		typename compute_laplace<TAILED_TYPELIST_2(result, next_x_row, further_x)>::type>
 #else
@@ -156,9 +171,19 @@ int main()
 #define PRESSURE_AT(iteration) << ",\n\"p" << iteration << "\": " << value_printer2d<laplace<iteration>::type>()
 	std::cout << "{\"p0\":" << value_printer2d<laplace<0>::type>()
 		PRESSURE_AT(100)
+		PRESSURE_AT(199)
 		PRESSURE_AT(200)
+		PRESSURE_AT(299)
 		PRESSURE_AT(300)
+		PRESSURE_AT(399)
 		PRESSURE_AT(400)
+		PRESSURE_AT(499)
+		PRESSURE_AT(500)
+		//PRESSURE_AT(599)
+		//PRESSURE_AT(600)
+		//PRESSURE_AT(700)
+		//PRESSURE_AT(800)
+		//PRESSURE_AT(900)
 		<< ",\n\"x\": " << value_printer2d<for_ij<NX, NY, grid_x>::type>()
 		<< ",\n\"y\": " << value_printer2d<for_ij<NX, NY, grid_y>::type>()
 		<< "}";
