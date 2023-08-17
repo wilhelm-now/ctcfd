@@ -153,20 +153,20 @@ namespace detail
 		};
 	};
 
-	template<class function, unsigned length_i, unsigned length_j,
-		unsigned index_i, bool valid = index_i < length_i>
-	struct for_ij_impl
+	template<class function, unsigned length_j>
+	struct function_ij
 	{
-		typedef typelist<
-			typename for_i<length_j, bind_first<index_i, function> >::type,
-			typename for_ij_impl<function, length_i, length_j, index_i + 1, index_i + 1 < length_i>::type> type;
+		template<unsigned index_i>
+		struct func
+		{
+			typedef typename for_i<length_j, bind_first<index_i, function> >::type type;
+		};
 	};
 
-	template<class function, unsigned length_i, unsigned length_j,
-		unsigned index_i>
-	struct for_ij_impl<function, length_i, length_j, index_i, false>
+	template<class function, unsigned length_i, unsigned length_j>
+	struct for_ij_impl
 	{
-		typedef null_t type;
+		typedef typename for_i<length_i, function_ij<function, length_j> >::type type;
 	};
 }
 
@@ -185,7 +185,7 @@ struct for_i : detail::for_i_impl<function, length, 0>
 
 // Like for_i but supplied meta-function takes two indices instead of one.
 template<unsigned length_i, unsigned length_j, typename function>
-struct for_ij : detail::for_ij_impl<function, length_i, length_j, 0>
+struct for_ij : detail::for_ij_impl<function, length_i, length_j>
 {
 };
 

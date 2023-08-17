@@ -27,6 +27,10 @@ int main()
 	typedef NUMBERLIST_5(0, 1, 2, 3, 4) zero2four;
 	CT_ASSERT((is_same<zero2four, for_i<5, identity_value>::type>::value));
 
+	typedef NUMBERLIST_16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15) to16;
+	CT_ASSERT((is_same<to16, for_i<16, identity_value>::type>::value));
+
+
 	typedef TYPELIST_3(
 		NUMBERLIST_4(0, 1, 2, 3),
 		NUMBERLIST_4(10, 11, 12, 13),

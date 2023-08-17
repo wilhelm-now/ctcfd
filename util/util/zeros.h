@@ -1,3 +1,6 @@
+#ifndef ZEROS_H
+#define ZEROS_H
+
 #include <util/for_i.h>
 #include <util/number.h>
 
@@ -34,3 +37,5 @@ struct zeros2d
 {
 	typedef typename for_ij<length_i, length_j, detail::zero2d_func>::type type;
 };
+
+#endif // !ZEROS_H

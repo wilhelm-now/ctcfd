@@ -1,23 +1,26 @@
 #ifndef ONES_H
 #define ONES_H
 
-#include <util/typelist.h>
+#include <util/for_i.h>
 #include <util/number.h>
+
+namespace detail
+{
+	struct one_func
+	{
+		template<unsigned>
+		struct func
+		{
+			typedef NUMBER_MAKE(1.0) type;
+		};
+	};
+}
 
 
 template<unsigned length>
 struct ones;
-
-template<>
-struct ones<1>
 {
-	typedef typelist<NUMBER_MAKE(1), null_t> type;
-};
-
-template<unsigned length>
-struct ones
-{
-	typedef typelist<NUMBER_MAKE(1), typename ones<length - 1>::type > type;
+	typedef for_i<length, detail::one_func>::type type;
 };
 
 #endif // !ONES_H
