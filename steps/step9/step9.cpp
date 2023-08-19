@@ -188,4 +188,17 @@ int main()
 		<< ",\n\"x\": " << value_printer2d<for_ij<NX, NY, grid_x>::type>()
 		<< ",\n\"y\": " << value_printer2d<for_ij<NX, NY, grid_y>::type>()
 		<< "}";
+
+//	std::cout << "abs sum: " << NUMBER_GET_RAW(abs_sum<laplace<0>::type>::value) << '\n';
+//	std::cout << "next   : " << NUMBER_GET_RAW(abs_sum<laplace<1>::type>::value) << '\n';
+//	std::cout << "next   : " << NUMBER_GET_RAW(abs_sum<laplace<2>::type>::value) << '\n';
+//
+//	std::cout << '\n';
+//#define RESIDUAL_PRINT(n) \
+//std::cout << "residual<" << n << ">: " << (NUMBER_GET_RAW(abs_sum<laplace<n>::type>::value) - NUMBER_GET_RAW(abs_sum<laplace<n-1>::type>::value))/NUMBER_GET_RAW(abs_sum<laplace<n-1>::type>::value) << '\n';
+//	RESIDUAL_PRINT(1)
+//	RESIDUAL_PRINT(2)
+//	RESIDUAL_PRINT(3)
+//	RESIDUAL_PRINT(100)
+//	RESIDUAL_PRINT(200)
 }
