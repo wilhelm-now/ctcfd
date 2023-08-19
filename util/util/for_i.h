@@ -23,7 +23,7 @@ namespace detail
 			remaining = length - index
 		};
 		enum {
-			track = remaining > 32 ? 4 : remaining > 16 ? 3 : remaining > 8 ? 2 : remaining >= 1 ? 1 : 0
+			track = remaining > 32 ? 5 : remaining > 16 ? 4 : remaining > 8 ? 3 : remaining > 4 ? 2 : remaining >= 1 ? 1 : 0
 		};
 	public:
 		typedef typename for_i_track<track>::template func<function, length, index>::type type;
@@ -62,6 +62,22 @@ namespace detail
 				typelist<typename function::template func<index + 1>::type,
 				typelist<typename function::template func<index + 2>::type,
 				typelist<typename function::template func<index + 3>::type,
+				typename for_i_impl<function, length, index + 4>::type
+				> > > > type;
+		};
+	};
+
+	template<>
+	struct for_i_track<3>
+	{
+		template<typename function, unsigned length, unsigned index>
+		struct func
+		{
+			typedef
+				typelist<typename function::template func<index + 0>::type,
+				typelist<typename function::template func<index + 1>::type,
+				typelist<typename function::template func<index + 2>::type,
+				typelist<typename function::template func<index + 3>::type,
 				typelist<typename function::template func<index + 4>::type,
 				typelist<typename function::template func<index + 5>::type,
 				typelist<typename function::template func<index + 6>::type,
@@ -72,7 +88,7 @@ namespace detail
 	};
 
 	template<>
-	struct for_i_track<3>
+	struct for_i_track<4>
 	{
 		template<typename function, unsigned length, unsigned index>
 		struct func
@@ -100,7 +116,7 @@ namespace detail
 	};
 
 	template<>
-	struct for_i_track<4>
+	struct for_i_track<5>
 	{
 		template<typename function, unsigned length, unsigned index>
 		struct func
