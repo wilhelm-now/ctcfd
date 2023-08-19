@@ -3,8 +3,9 @@
 #include "step9_sor_omega.h"
 #endif
 
-#include <util/for_i.h>
+#include "l1_norm.h"
 
+#include <util/for_i.h>
 #include <util/number.h>
 #include <util/zeros.h>
 #include <util/conditional.h>
