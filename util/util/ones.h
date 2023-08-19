@@ -18,9 +18,9 @@ namespace detail
 
 
 template<unsigned length>
-struct ones;
+struct ones
 {
-	typedef for_i<length, detail::one_func>::type type;
+	typedef typename for_i<length, detail::one_func>::type type;
 };
 
 #endif // !ONES_H
