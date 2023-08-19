@@ -3,6 +3,7 @@
 
 #include <util/typelist.h>
 #include <util/number.h>
+#include <util/minus.h>
 
 #define CTCFD_ABS(x) ((x) >= 0 ? (x) : -(x))
 
@@ -32,7 +33,7 @@ struct l1_norm<typelist<current_row, next_rows> >
 
 
 template<typename values_current, typename values_prev>
-struct l1_norm_convergence : NUMBER_MAKE(CTCFD_ABS((NUMBER_GET_RAW(l1_norm<values_current>::value) - NUMBER_GET_RAW(l1_norm<values_prev>::value)) / NUMBER_GET_RAW(l1_norm<values_prev>::value)))
+struct l1_norm_convergence : NUMBER_MAKE(NUMBER_GET_RAW((l1_norm<typename minus<values_current, values_prev>::type>::value)) / NUMBER_GET_RAW(l1_norm<values_prev>::value))
 {
 };
 
