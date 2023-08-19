@@ -17,7 +17,7 @@ struct l1_norm<null_t>
 };
 
 // iteration over a row
-template<long long num, typename tail>
+template<number_rep num, typename tail>
 struct l1_norm<typelist<number_c<num>, tail> >
 {
 	enum { value = CTCFD_ABS(num) + l1_norm<tail>::value };
@@ -38,22 +38,22 @@ struct l1_norm_convergence : NUMBER_MAKE(CTCFD_ABS((NUMBER_GET_RAW(l1_norm<value
 
 // Fast tracks for a single row below
 
-template<long long x1, long long x2, long long x3, long long x4, typename tail>
+template<number_rep x1, number_rep x2, number_rep x3, number_rep x4, typename tail>
 struct l1_norm<TAILED_TYPELIST_4(number_c<x1>, number_c<x2>, number_c<x3>, number_c<x4>, tail)>
 {
 	enum { value = CTCFD_ABS(x1) + CTCFD_ABS(x2) + CTCFD_ABS(x3) + CTCFD_ABS(x4) + l1_norm<tail>::value };
 };
 
 
-template<long long x1, long long x2, long long x3, long long x4, long long x5, long long x6, long long x7, long long x8, typename tail>
+template<number_rep x1, number_rep x2, number_rep x3, number_rep x4, number_rep x5, number_rep x6, number_rep x7, number_rep x8, typename tail>
 struct l1_norm<TAILED_TYPELIST_8(number_c<x1>, number_c<x2>, number_c<x3>, number_c<x4>, number_c<x5>, number_c<x6>, number_c<x7>, number_c<x8>, tail)>
 {
 	enum { value = CTCFD_ABS(x1) + CTCFD_ABS(x2) + CTCFD_ABS(x3) + CTCFD_ABS(x4) + CTCFD_ABS(x5) + CTCFD_ABS(x6) + CTCFD_ABS(x7) + CTCFD_ABS(x8) + l1_norm<tail>::value };
 };
 
 
-template<long long x1, long long x2, long long x3, long long x4, long long x5, long long x6, long long x7, long long x8,
-	long long x9, long long x10, long long x11, long long x12, long long x13, long long x14, long long x15, long long x16, typename tail>
+template<number_rep x1, number_rep x2, number_rep x3, number_rep x4, number_rep x5, number_rep x6, number_rep x7, number_rep x8,
+	number_rep x9, number_rep x10, number_rep x11, number_rep x12, number_rep x13, number_rep x14, number_rep x15, number_rep x16, typename tail>
 struct l1_norm<TAILED_TYPELIST_16(number_c<x1>, number_c<x2>, number_c<x3>, number_c<x4>, number_c<x5>, number_c<x6>, number_c<x7>, number_c<x8>, number_c<x9>, number_c<x10>, number_c<x11>, number_c<x12>, number_c<x13>, number_c<x14>, number_c<x15>, number_c<x16>, tail)>
 {
 	enum { value = 

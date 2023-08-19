@@ -5,8 +5,10 @@
 
 #define NUMBER_SCALE (0x1000000ll) // 24 bits of decimals
 
+typedef long long number_rep;
+
 // Saves raw number in fixed point format
-template<long long number>
+template<number_rep number>
 struct number_c
 {
 	enum {raw_value = number};
@@ -15,7 +17,7 @@ struct number_c
 	
 };
 
-template<long long raw>
+template<number_rep raw>
 std::ostream& operator<<(std::ostream& os, number_c<raw> number)
 {
 	return os << number.get();
@@ -23,7 +25,7 @@ std::ostream& operator<<(std::ostream& os, number_c<raw> number)
 
 
 // save a number in type
-#define NUMBER_MAKE(numb) number_c<static_cast<long long>((numb) * NUMBER_SCALE)>
+#define NUMBER_MAKE(numb) number_c<static_cast<number_rep>((numb) * NUMBER_SCALE)>
 // compile time get a number from the value
 #define NUMBER_GET_RAW(raw_value) (raw_value * 1.0 / NUMBER_SCALE)
 // compile time get a number from the type

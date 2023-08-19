@@ -32,7 +32,7 @@ class compute_wave<typelist<previous, current> >
 {
 	// backwards diff
 	// u[current_t=timestep, idx] = u[previous_t, idx] - (C*DT/DX)*(u[previous_t, idx] - u[previous_t, idx-1]
-	enum { computed_value = (long long)(current::head::raw_value*1.0 - (C*DT*1.0/DX)*(current::head::raw_value - previous::raw_value*1.0)) };
+	enum { computed_value = (number_rep)(current::head::raw_value*1.0 - (C*DT*1.0/DX)*(current::head::raw_value - previous::raw_value*1.0)) };
 public:
 	typedef typelist<number_c< computed_value >, typename compute_wave<current>::type> type;
 };
