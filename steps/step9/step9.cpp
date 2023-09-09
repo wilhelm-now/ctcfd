@@ -167,38 +167,29 @@ struct grid_y
 	};
 };
 
+struct residual
+{
+	template<unsigned iteration>
+	struct func
+	{
+		typedef l1_norm_convergence<typename laplace<iteration>::type, typename laplace<iteration - 1>::type> type;
+	};
+
+	template<>
+	struct func<0>
+	{
+		typedef NUMBER_MAKE(1.0) type;
+	};
+};
+
 int main()
 {
+#define TOTAL_ITERS 400
 #define PRESSURE_AT(iteration) << ",\n\"p" << iteration << "\": " << value_printer2d<laplace<iteration>::type>()
 	std::cout << "{\"p0\":" << value_printer2d<laplace<0>::type>()
-		PRESSURE_AT(100)
-		PRESSURE_AT(199)
-		PRESSURE_AT(200)
-		PRESSURE_AT(299)
-		PRESSURE_AT(300)
-		PRESSURE_AT(399)
-		PRESSURE_AT(400)
-		PRESSURE_AT(499)
-		PRESSURE_AT(500)
-		//PRESSURE_AT(599)
-		//PRESSURE_AT(600)
-		//PRESSURE_AT(700)
-		//PRESSURE_AT(800)
-		//PRESSURE_AT(900)
+		PRESSURE_AT(TOTAL_ITERS)
 		<< ",\n\"x\": " << value_printer2d<for_ij<NX, NY, grid_x>::type>()
 		<< ",\n\"y\": " << value_printer2d<for_ij<NX, NY, grid_y>::type>()
+		<< "\n\"residual\": [" << value_printer<for_i<TOTAL_ITERS, residual>::type>() << "]\n";
 		<< "}";
-
-//	std::cout << "abs sum: " << NUMBER_GET_RAW(abs_sum<laplace<0>::type>::value) << '\n';
-//	std::cout << "next   : " << NUMBER_GET_RAW(abs_sum<laplace<1>::type>::value) << '\n';
-//	std::cout << "next   : " << NUMBER_GET_RAW(abs_sum<laplace<2>::type>::value) << '\n';
-//
-//	std::cout << '\n';
-//#define RESIDUAL_PRINT(n) \
-//std::cout << "residual<" << n << ">: " << (NUMBER_GET_RAW(abs_sum<laplace<n>::type>::value) - NUMBER_GET_RAW(abs_sum<laplace<n-1>::type>::value))/NUMBER_GET_RAW(abs_sum<laplace<n-1>::type>::value) << '\n';
-//	RESIDUAL_PRINT(1)
-//	RESIDUAL_PRINT(2)
-//	RESIDUAL_PRINT(3)
-//	RESIDUAL_PRINT(100)
-//	RESIDUAL_PRINT(200)
 }
