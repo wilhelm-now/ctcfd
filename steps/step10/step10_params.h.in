@@ -1,0 +1,15 @@
+#pragma once
+
+// grid sizing
+#cmakedefine NX @NX@
+#cmakedefine NY @NY@
+
+// domain size
+#cmakedefine LX @LX@
+#cmakedefine LY @LY@
+
+#define DX ((LX) / (NX - 1.0))
+// Note smaller Y domain
+#define DY ((LY) / (NY - 1.0))
+
+#cmakedefine NITERS @NITERS@
