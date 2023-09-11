@@ -9,16 +9,7 @@ namespace detail
 {
 	struct zero_func
 	{
-		template<unsigned>
-		struct func
-		{
-			typedef NUMBER_MAKE(0) type;
-		};
-	};
-
-	struct zero2d_func
-	{
-		template<unsigned, unsigned>
+		template<unsigned, unsigned=0>
 		struct func
 		{
 			typedef NUMBER_MAKE(0) type;
@@ -35,7 +26,7 @@ struct zeros
 template<unsigned length_i, unsigned length_j>
 struct zeros2d
 {
-	typedef typename for_ij<length_i, length_j, detail::zero2d_func>::type type;
+	typedef typename for_ij<length_i, length_j, detail::zero_func>::type type;
 };
 
 #endif // !ZEROS_H
