@@ -16,10 +16,21 @@ set(S10_TARGETS
 
 while (S10_TARGETS)
 	list(POP_FRONT S10_TARGETS TARGET_SUFFIX TARGET_DEFINE)
-	add_executable(step10-${TARGET_SUFFIX} step10.cpp ${CMAKE_CURRENT_BINARY_DIR}/step10_params.h)
-	target_include_directories(step10-${TARGET_SUFFIX} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-	target_link_libraries(step10-${TARGET_SUFFIX} util)
-	target_compile_definitions(step10-${TARGET_SUFFIX} PUBLIC ${TARGET_DEFINE})
+	foreach(TRACKED 0 1)
+		set(TARGET_NAME step10-${TARGET_SUFFIX})
+		if (${TRACKED})
+			set(TARGET_NAME ${TARGET_NAME}-tracked)
+		endif()
+
+		add_executable(${TARGET_NAME} step10.cpp ${CMAKE_CURRENT_BINARY_DIR}/step10_params.h)
+		target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+		target_link_libraries(${TARGET_NAME} util)
+		target_compile_definitions(${TARGET_NAME} PUBLIC ${TARGET_DEFINE})
+		
+		if(${TRACKED})
+			target_compile_definitions(${TARGET_NAME} PUBLIC CTCFD_FASTTRACKED)
+		endif()
+	endforeach()
 endwhile()
 
 # make header with optimal successive over relaxation factor
