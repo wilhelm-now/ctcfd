@@ -2,7 +2,7 @@
   "version": 3,
   "configurePresets": [
     {
-      "name": "base",
+      "name": "msvc-base",
       "description": "For more information: http://aka.ms/cmakepresetsvs",
       "hidden": true,
       "generator": "Ninja",
@@ -15,10 +15,23 @@
       }
     },
     {
-      "name": "x64-debug",
+      "name": "gcc-base",
+      "description": "gcc preset",
+      "hidden": true,
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "installDir": "${sourceDir}/build/INSTALL/${presetName}",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    },
+    {
+      "name": "msvc-x64-debug",
       "displayName": "x64 Debug",
       "description": "Sets debug build type and x64 arch",
-      "inherits": "base",
+      "inherits": "msvc-base",
       "architecture": {
         "value": "x64",
         "strategy": "external"
@@ -28,19 +41,19 @@
       }
     },
     {
-      "name": "x64-release",
+      "name": "msvc-x64",
       "displayName": "x64 Release",
       "description": "Sets release build type",
-      "inherits": "x64-debug",
+      "inherits": "msvc-x64-debug",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
     },
     {
-      "name": "x86-debug",
-      "displayName": "x86 Debug ",
+      "name": "msvc-x86-debug",
+      "displayName": "x86 Debug",
       "description": "Sets debug build type and x86 arch",
-      "inherits": "base",
+      "inherits": "msvc-base",
       "architecture": {
         "value": "x86",
         "strategy": "external"
@@ -50,10 +63,34 @@
       }
     },
     {
-      "name": "x86-release",
+      "name": "msvc-x86",
       "displayName": "x86 Release",
       "description": "Sets release build type",
-      "inherits": "x86-debug",
+      "inherits": "msvc-x86-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "gcc-debug",
+      "displayName": "GCC x64 Debug",
+      "description": "Sets debug build type and x64 arch",
+      "inherits": "gcc-base",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "gcc",
+      "displayName": "GCC x64 Release",
+      "description": "Sets release build type",
+      "inherits": "gcc-debug",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
