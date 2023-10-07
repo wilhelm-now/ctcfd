@@ -59,9 +59,11 @@ struct wave_eq
 
 int main()
 {
-	std::cout << "U0, U1, UM = [" << value_printer<wave_eq<0>::type>()
-		<< "], [" << value_printer<wave_eq<NT>::type>()
-		<< "], [" << value_printer<wave_eq<NT/2>::type>()
-		<< "]\n";
+#define VALUES_AT(step) "\"U" << step << "\": [" << value_printer<wave_eq<step>::type>() << ']'
+	std::cout << "{"
+		<< VALUES_AT(0)
+		<< ",\n" << VALUES_AT(NT)
+		<< ",\n" << VALUES_AT(NT / 2)
+		<< "}";
 }
 	

@@ -184,12 +184,11 @@ struct residual
 
 int main()
 {
-#define TOTAL_ITERS 400
+#define TOTAL_ITERS 100
 #define PRESSURE_AT(iteration) << ",\n\"p" << iteration << "\": " << value_printer2d<laplace<iteration>::type>()
 	std::cout << "{\"p0\":" << value_printer2d<laplace<0>::type>()
 		PRESSURE_AT(TOTAL_ITERS)
 		<< ",\n\"x\": " << value_printer2d<for_ij<NX, NY, grid_x>::type>()
 		<< ",\n\"y\": " << value_printer2d<for_ij<NX, NY, grid_y>::type>()
-		<< "\n\"residual\": [" << value_printer<for_i<TOTAL_ITERS, residual>::type>() << "]\n";
-		<< "}";
+		<< ",\n\"residual\": [" << value_printer<for_i<TOTAL_ITERS, residual>::type>() << "]}";
 }

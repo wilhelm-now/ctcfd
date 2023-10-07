@@ -106,9 +106,8 @@ public:
 
 int main()
 {
-	std::cout << "U0, U1, UA = [" << value_printer<burgers<0>::type>() << 
-		"], [" << value_printer<burgers_continued<NT>::type>() <<
-		"], [" << value_printer<STEP4_CONCAT(analytical_t, NT)>() <<
-		"]\n";
+	std::cout << "{\"U0\": [" << value_printer<burgers<0>::type>() << "],\n"
+		<< "\"U1\": [" << value_printer<burgers<NT>::type>() << "],\n" 
+		<< "\"UA\": [" << value_printer<STEP4_CONCAT(analytical_t, NT)>() << "]}";
 }
 

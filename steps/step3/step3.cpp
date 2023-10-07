@@ -66,8 +66,7 @@ struct diffusion
 
 int main()
 {	
-	std::cout << "U0, U1 = [" << value_printer<diffusion<0>::type>() << 
-		"], [" << value_printer<diffusion<NT>::type>() << 
-		"]\n";
+	std::cout << "{\"U0\": [" << value_printer<diffusion<0>::type>() << "],\n"
+		<< "\"U1\": [" << value_printer<diffusion<NT>::type>() << "]}";
 }
 

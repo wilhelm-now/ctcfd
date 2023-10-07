@@ -61,7 +61,6 @@ struct convection
 
 int main()
 {
-	std::cout << "U0, U1 = [" << value_printer<convection<0>::type>() << "]"
-		<< ", [" << value_printer<convection<NT>::type>() << "]"
-		<< '\n';
+	std::cout << "{\"U0\": [" << value_printer<convection<0>::type>() << "],\n"
+		<< "\"U1\": [" << value_printer<convection<NT>::type>() << "]}";
 }
