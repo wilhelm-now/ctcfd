@@ -11,3 +11,5 @@
 #define DX ((LX) / (NX - 1.0))
 // Note smaller Y domain
 #define DY ((LY) / (NY - 1.0))
+
+#cmakedefine NITERS @NITERS@

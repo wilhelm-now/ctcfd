@@ -2,6 +2,7 @@ set(NX 31)
 set(NY 31)
 set(LX 2)
 set(LY 1)
+set(NITERS 100)
 
 configure_file(
 	${CMAKE_CURRENT_SOURCE_DIR}/step9_params.h.in

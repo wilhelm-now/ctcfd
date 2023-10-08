@@ -167,28 +167,37 @@ struct grid_y
 	};
 };
 
-struct residual
+namespace detail
 {
+	// MSVC allows specialization in struct body, GCC does not.
 	template<unsigned iteration>
-	struct func
+	struct residual_func
 	{
 		typedef l1_norm_convergence<typename laplace<iteration>::type, typename laplace<iteration - 1>::type> type;
 	};
 
 	template<>
-	struct func<0>
+	struct residual_func<0>
 	{
 		typedef NUMBER_MAKE(1.0) type;
+	};
+}
+
+struct residual
+{
+	template<unsigned iteration>
+	struct func
+	{
+		typedef typename detail::residual_func<iteration>::type type;
 	};
 };
 
 int main()
 {
-#define TOTAL_ITERS 100
-#define PRESSURE_AT(iteration) << ",\n\"p" << iteration << "\": " << value_printer2d<laplace<iteration>::type>()
+#define VALUES_AT(iteration) << ",\n\"p" << iteration << "\": " << value_printer2d<laplace<iteration>::type>()
 	std::cout << "{\"p0\":" << value_printer2d<laplace<0>::type>()
-		PRESSURE_AT(TOTAL_ITERS)
+		VALUES_AT(NITERS)
 		<< ",\n\"x\": " << value_printer2d<for_ij<NX, NY, grid_x>::type>()
 		<< ",\n\"y\": " << value_printer2d<for_ij<NX, NY, grid_y>::type>()
-		<< ",\n\"residual\": [" << value_printer<for_i<TOTAL_ITERS, residual>::type>() << "]}";
+		<< "\n\"residual\": [" << value_printer<for_i<NITERS, residual>::type>() << "]}";
 }
