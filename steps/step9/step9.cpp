@@ -199,5 +199,5 @@ int main()
 		VALUES_AT(NITERS)
 		<< ",\n\"x\": " << value_printer2d<for_ij<NX, NY, grid_x>::type>()
 		<< ",\n\"y\": " << value_printer2d<for_ij<NX, NY, grid_y>::type>()
-		<< "\n\"residual\": [" << value_printer<for_i<NITERS, residual>::type>() << "]}";
+		<< ",\n\"residual\": [" << value_printer<for_i<NITERS, residual>::type>() << "]}";
 }

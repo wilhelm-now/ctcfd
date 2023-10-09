@@ -36,7 +36,7 @@ endwhile()
 # make header with optimal successive over relaxation factor
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/step10_sor_omega.h
-    COMMAND python step10_sor_omega.py -o ${CMAKE_CURRENT_BINARY_DIR}/step10_sor_omega.h --NX ${NX} --LX ${LX} --NY ${NY} --LY ${LY} --paramname CTCFD_POISSON_SOR_OMEGA
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMAND python sor_omega.py -o ${CMAKE_CURRENT_BINARY_DIR}/step10_sor_omega.h --NX ${NX} --LX ${LX} --NY ${NY} --LY ${LY} --paramname CTCFD_POISSON_SOR_OMEGA
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../common
 )
 target_sources(step10-sor PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/step10_sor_omega.h)
