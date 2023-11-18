@@ -1,8 +1,8 @@
 set(NX 50)
 set(NY 50)
 set(LX 2)
-set(LY 1)
-set(NITERS 100)
+set(LY 2)
+set(NITERS 10)
 
 configure_file(
 	${CMAKE_CURRENT_SOURCE_DIR}/step11_params.h.in
@@ -15,28 +15,18 @@ set(S10_TARGETS
 	sor CTCFD_POISSON_SOR) # sor is short for Successive Over Relaxation
 
 while (S10_TARGETS)
-	list(POP_FRONT S10_TARGETS TARGET_SUFFIX TARGET_DEFINE)
-	foreach(TRACKED 0 1)
-		set(TARGET_NAME step11-${TARGET_SUFFIX})
-		if (${TRACKED})
-			set(TARGET_NAME ${TARGET_NAME}-tracked)
-		endif()
-
-		add_executable(${TARGET_NAME} step11.cpp ${CMAKE_CURRENT_BINARY_DIR}/step11_params.h)
-		target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-		target_link_libraries(${TARGET_NAME} util)
-		target_compile_definitions(${TARGET_NAME} PUBLIC ${TARGET_DEFINE})
-		
-		if(${TRACKED})
-			target_compile_definitions(${TARGET_NAME} PUBLIC CTCFD_FASTTRACKED)
-		endif()
-	endforeach()
+  list(POP_FRONT S10_TARGETS TARGET_SUFFIX TARGET_DEFINE)
+  set(TARGET_NAME step11-${TARGET_SUFFIX})
+  add_executable(${TARGET_NAME} step11.cpp poisson.h ${CMAKE_CURRENT_BINARY_DIR}/step11_params.h)
+  target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+  target_link_libraries(${TARGET_NAME} util)
+  target_compile_definitions(${TARGET_NAME} PUBLIC ${TARGET_DEFINE})
 endwhile()
 
 # make header with optimal successive over relaxation factor
 add_custom_command(
-	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/step11_sor_omega.h
-    COMMAND python sor_omega.py -o ${CMAKE_CURRENT_BINARY_DIR}/step11_sor_omega.h --NX ${NX} --LX ${LX} --NY ${NY} --LY ${LY} --paramname CTCFD_POISSON_SOR_OMEGA
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../common
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/step11_sor_omega.h
+  COMMAND python sor_omega.py -o ${CMAKE_CURRENT_BINARY_DIR}/step11_sor_omega.h --NX ${NX} --LX ${LX} --NY ${NY} --LY ${LY} --paramname CTCFD_POISSON_SOR_OMEGA
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../common
 )
 target_sources(step11-sor PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/step11_sor_omega.h)
