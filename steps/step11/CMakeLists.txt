@@ -1,8 +1,8 @@
-set(NX 50)
-set(NY 50)
+set(NX 21)
+set(NY 21)
 set(LX 2)
 set(LY 2)
-set(NITERS 10)
+set(NITERS 50)
 
 configure_file(
 	${CMAKE_CURRENT_SOURCE_DIR}/step11_params.h.in

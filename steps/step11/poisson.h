@@ -30,8 +30,6 @@
 
 typedef zeros<NY>::type boundary_row;
 
-typedef zeros2d<NX, NY>::type source_b;
-
 template<TYPENAMES_5(px, nx, py, ny, b)> // previous x, next x, previous y, current y, source term at this location
 struct compute_poisson_point
 {
@@ -59,7 +57,7 @@ class compute_poisson_row<
 {
 	typedef typename compute_poisson_point<pxcy, nxcy, cxpy, cxny, cxcy_b>::type computed;
 public:
-	typedef TYPELIST_1(NUMBER_MAKE(0.0)) type; // pressure = 0 at far y limit
+	typedef TYPELIST_2(computed, NUMBER_MAKE(0.0)) type; // pressure = 0 at far y limit
 };
 
 template<
@@ -92,7 +90,7 @@ class compute_poisson;
 template<typename previous_x_row, typename current_x_row, typename edge_x_row, typename previous_source, typename current_source, typename edge_source>
 class compute_poisson<TYPELIST_3(previous_x_row, current_x_row, edge_x_row), TYPELIST_3(previous_source, current_source, edge_source)>
 {
-	typedef typename compute_poisson_row<previous_x_row, current_x_row, next_x_row, current_source>::type computed_row;
+	typedef typename compute_poisson_row<previous_x_row, current_x_row, edge_x_row, current_source>::type computed_row;
 	typedef typelist<typename computed_row::head, computed_row> result; // Set dp/dy=0 at minimum y
 public:
 	typedef TYPELIST_2(result, result) type; // repeat result to get dp/dx = 0 at maximum x
@@ -119,17 +117,16 @@ template<typename initial, typename source_b>
 struct poisson<0, initial, source_b>
 {
 	typedef initial type; // done with iterations
-	typedef zeros2d<NX, NY>::type type;
 };
 
-template<unsigned iteration, typename initial, typename source_b>
+template<unsigned iterations, typename initial, typename source_b>
 struct poisson
 {
 private:
-	typedef typename compute_poisson<typename initial::type, source_b>::type computed;
+	typedef typename compute_poisson<initial, source_b>::type computed;
 	// repeat first row for dp/dx = 0 at x = 0 (near limit)
 	typedef typelist<typename computed::head, computed> intermediate;
 public:
 	// actual result
-	typedef typename poisson<iteration - 1, intermediate, source_b>::type type;
+	typedef typename poisson<iterations - 1, intermediate, source_b>::type type;
 };
