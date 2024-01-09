@@ -13,3 +13,7 @@
 #define DY ((LY) / (NY - 1.0))
 
 #cmakedefine NITERS @NITERS@
+
+#define RHO @RHO@
+#define NU @NU@
+#define DT @DT@

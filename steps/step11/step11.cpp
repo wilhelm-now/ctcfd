@@ -1,5 +1,6 @@
 #include "step11_params.h"
 #include "poisson.h"
+#include "pressure_eq.h"
 
 
 #include <util/for_i.h>
@@ -38,6 +39,9 @@ struct b_func
 			: index_i == 3 * NX / 4 && index_j == 3 * NY / 4 ? -100.0 : 0.0) type;
 	};
 };
+
+template<typename u, typename v>
+struct build_b;
 
 typedef for_ij<NX, NY, b_func>::type source_b;
 
