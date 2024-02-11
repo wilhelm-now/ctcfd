@@ -12,15 +12,20 @@ configure_file(
 	${CMAKE_CURRENT_BINARY_DIR}/step11_params.h
 	@ONLY)
 
-set(S10_TARGETS
+set(S11_TARGETS
 	jacobi CTCFD_POISSON_JACOBI
 	gs CTCFD_POISSON_GAUSS_SEIDEL
 	sor CTCFD_POISSON_SOR) # sor is short for Successive Over Relaxation
 
-while (S10_TARGETS)
-  list(POP_FRONT S10_TARGETS TARGET_SUFFIX TARGET_DEFINE)
+while (S11_TARGETS)
+  list(POP_FRONT S11_TARGETS TARGET_SUFFIX TARGET_DEFINE)
   set(TARGET_NAME step11-${TARGET_SUFFIX})
-  add_executable(${TARGET_NAME} step11.cpp poisson.h pressure_eq.h ${CMAKE_CURRENT_BINARY_DIR}/step11_params.h)
+  add_executable(${TARGET_NAME}
+    step11.cpp
+    poisson.h
+    pressure_eq.h
+    velocity_step.h
+    ${CMAKE_CURRENT_BINARY_DIR}/step11_params.h)
   target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
   target_link_libraries(${TARGET_NAME} util)
   target_compile_definitions(${TARGET_NAME} PUBLIC ${TARGET_DEFINE})
