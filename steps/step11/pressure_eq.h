@@ -5,6 +5,8 @@
 #include <util/zeros.h>
 
 // Builds pressure forcing term to be used in poisson solver
+template<typename velocities>
+struct pressure_rhs;
 
 template<typename px, typename nx, typename py, typename ny>
 struct pressure_rhs_point
@@ -83,8 +85,10 @@ struct pressure_rhs_impl<TAILED_TYPELIST_3(previous_x, current_x, next_x, tail_x
 };
 
 
+
+
 template<typename x0, typename x1, typename x2, typename x3>
-struct pressure_rhs
+struct pressure_rhs<TAILED_TYPELIST_3(x0, x1, x2, x3)>
 {
   typedef typelist<zeros<NX>::type,
 		   typename pressure_rhs_impl<TAILED_TYPELIST_3(x0, x1, x2, x3)>::type> type;

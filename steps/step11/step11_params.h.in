@@ -12,7 +12,11 @@
 // Note smaller Y domain
 #define DY ((LY) / (NY - 1.0))
 
+// pressure iterations
 #cmakedefine NITERS @NITERS@
+
+// time steps
+#cmakedefine NT @NT@
 
 #define RHO @RHO@
 #define NU @NU@
