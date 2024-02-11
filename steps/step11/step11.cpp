@@ -40,9 +40,6 @@ struct b_func
 	};
 };
 
-template<typename u, typename v>
-struct build_b;
-
 typedef for_ij<NX, NY, b_func>::type source_b;
 
 typedef zeros2d<NX, NY>::type initial;
