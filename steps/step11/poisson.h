@@ -28,7 +28,6 @@
 #define CTCFD_PREVIOUS_ROW(previous_row, computed_row) computed_row
 #endif
 
-typedef zeros<NY>::type boundary_row;
 
 template<TYPENAMES_5(px, nx, py, ny, b)> // previous x, next x, previous y, current y, source term at this location
 struct compute_poisson_point
