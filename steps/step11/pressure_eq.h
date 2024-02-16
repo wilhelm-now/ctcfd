@@ -69,7 +69,7 @@ struct pressure_rhs_impl;
 template<typename previous_x, typename current_x>
 struct pressure_rhs_impl<TYPELIST_2(previous_x, current_x)>
 {
-  typedef zeros<NX>::type type;
+  typedef typelist<zeros<NY>::type, null_t> type;
 };
 
 
@@ -90,7 +90,7 @@ struct pressure_rhs_impl<TAILED_TYPELIST_3(previous_x, current_x, next_x, tail_x
 template<typename x0, typename x1, typename x2, typename x3>
 struct pressure_rhs<TAILED_TYPELIST_3(x0, x1, x2, x3)>
 {
-  typedef typelist<zeros<NX>::type,
+  typedef typelist<zeros<NY>::type,
 		   typename pressure_rhs_impl<TAILED_TYPELIST_3(x0, x1, x2, x3)>::type> type;
 };
 

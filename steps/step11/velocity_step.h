@@ -110,7 +110,7 @@ struct zero_point
 	};
 };
 
-typedef for_i<NX, zero_point> boundary_velocity;  // for no slip boundary condition
+typedef for_i<NY, zero_point>::type boundary_velocity;  // for no slip boundary condition
 
 
 template<typename velocities, typename pressures>

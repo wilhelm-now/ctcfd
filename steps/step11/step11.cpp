@@ -71,20 +71,26 @@ struct cavity_flow
 {
 	typedef typename pressure_rhs<typename cavity_flow<iter - 1>::velocity>::type pressure_forcing;
 	typedef typename poisson<NITERS, typename cavity_flow<iter - 1>::pressure, pressure_forcing>::type pressure;
+	typedef typename velocity_step<typename cavity_flow<iter - 1>::velocity, pressure>::type velocity;
 };
 
 
 int main()
 {
 
-#define VALUES_AT(iter) << ",\n\"p" << iter << "\": " << value_printer2d<poisson<iter, initial_pressure, source_b>::type>()
-	std::cout << "{\"p0\":" << value_printer2d<poisson<0, initial_pressure, source_b>::type>()
-		// VALUES_AT(1)
-		// VALUES_AT(5)
-		VALUES_AT(NITERS)
+#define COMPONENT_AT(key, component, iter) << ",\n\"" << key << iter << "\": " << value_printer2d<cavity_flow<iter>::component>()
+#define PRESSURE_AT(iter) COMPONENT_AT("p", pressure, iter)
+#define VELOCITY_AT(iter) COMPONENT_AT("v", velocity, iter)
+#define PRESSURE_FORCING_AT(iter) COMPONENT_AT("pf", pressure_forcing, iter)
+
+
+	std::cout << "{"
+		PRESSURE_FORCING_AT(1)
+		PRESSURE_AT(1)
+		VELOCITY_AT(1)
+		PRESSURE_AT(100)
+		VELOCITY_AT(100)
 		<< ",\n\"x\": " << value_printer2d<for_ij<NX, NY, grid_x>::type>()
 		<< ",\n\"y\": " << value_printer2d<for_ij<NX, NY, grid_y>::type>()
-		<< ",\n\"b\": " << value_printer2d<source_b>()
-		<< ",\n\"initial\": " << value_printer2d<initial_pressure>()
 		<< "}";
 }
