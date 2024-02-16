@@ -74,10 +74,13 @@ def do_plot(json_text, selections):
         # hack, but allow data to be stored in grid layout with multiple values
         elif len(z_shape) == 3:
             for idx in range(z_shape[-1]):
-                plot_2d(f_data[:, :, idx],
-                        f"{f_key}[:, :, {idx}]({axes_data[0]}, {axes_data[1]})",
-                        x=axes_data[0], y=axes_data[1],
-                        x_label=axes_keys[0], y_label=axes_keys[1])
+                if len(axes_data) == 0:
+                    plot_2d(f_data[:, :, idx], title=f"{f_key}[:, :, {idx}]", z_label=f_key)
+                elif len(axes_data) == 2:
+                    plot_2d(f_data[:, :, idx],
+                            f"{f_key}[:, :, {idx}]({axes_data[0]}, {axes_data[1]})",
+                            x=axes_data[0], y=axes_data[1],
+                            x_label=axes_keys[0], y_label=axes_keys[1])
         else:
             raise ValueError("Unsupported shape of data")
 
