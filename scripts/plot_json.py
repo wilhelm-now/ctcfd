@@ -47,7 +47,9 @@ def do_plot(json_text, selections):
         axes_data = [np.array(js[k]) for k in axes_keys]
 
         for i, d in enumerate(axes_data):
-            if np.shape(f_data) != np.shape(d):
+            axis_shape = np.shape(d)
+            data_shape = np.shape(f_data)[:len(axis_shape)]
+            if axis_shape != data_shape:
                 raise ValueError(
                     f"Shape mismatch between shape({f_key})={np.shape(f_data)} and shape({axes_keys[i]})={np.shape(d)}")
 
@@ -78,7 +80,7 @@ def do_plot(json_text, selections):
                     plot_2d(f_data[:, :, idx], title=f"{f_key}[:, :, {idx}]", z_label=f_key)
                 elif len(axes_data) == 2:
                     plot_2d(f_data[:, :, idx],
-                            f"{f_key}[:, :, {idx}]({axes_data[0]}, {axes_data[1]})",
+                            f"{f_key}[:, :, {idx}]({axes_keys[0]}, {axes_keys[1]})",
                             x=axes_data[0], y=axes_data[1],
                             x_label=axes_keys[0], y_label=axes_keys[1])
         else:
