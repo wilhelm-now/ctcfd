@@ -84,12 +84,12 @@ int main()
 #define PRESSURE_FORCING_AT(iter) COMPONENT_AT("pf", pressure_forcing, iter)
 
 
-	std::cout << "{"
+	std::cout << "{\"NITERS\": " << NITERS << ",\n\"NT\": " << NT
 		PRESSURE_FORCING_AT(1)
 		PRESSURE_AT(1)
 		VELOCITY_AT(1)
-		PRESSURE_AT(100)
-		VELOCITY_AT(100)
+		PRESSURE_AT(NT)
+		VELOCITY_AT(NT)
 		<< ",\n\"x\": " << value_printer2d<for_ij<NX, NY, grid_x>::type>()
 		<< ",\n\"y\": " << value_printer2d<for_ij<NX, NY, grid_y>::type>()
 		<< "}";
