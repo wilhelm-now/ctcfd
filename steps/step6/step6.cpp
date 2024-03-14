@@ -145,7 +145,7 @@ template<typename previous_x, typename current_x, typename next_x>
 struct compute_convection<typelist<previous_x, typelist<current_x, next_x> > >
 {
 	typedef typelist<
-		typelist<POINT_MAKE(1, 1), // boundary condition and rest of calculatin
+		typelist<POINT_MAKE(1, 1), // boundary condition and rest of calculation
 		typename compute_convection_row<previous_x, current_x>::type
 		>
 		,
