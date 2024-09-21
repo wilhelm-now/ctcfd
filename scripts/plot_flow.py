@@ -28,7 +28,7 @@ def get_source(filename=None):
         return fo.read()
 
 
-def plot_flow(text, fname=None, timestep=None):
+def plot_flow(text, fname=None, timestep=None, savename=None, title=None):
     """Plot a flowfield at specified timestep/iteration. If no
     timestep is provided max present is used.
 
@@ -58,12 +58,17 @@ for velocity.
     plt.quiver(x, y, v[:, :, 0], v[:, :, 1])
     plt.xlabel("X")
     plt.ylabel("Y")
-    if fname is not None:
-        plt.title(fname)
-    plt.show()
+    
+    plt.title((title if title else fname if fname else "") + " timestep " + str(timestep))
+    
+    if savename is None:
+        plt.show()
+    else:
+        plt.savefig(savename)
 
 
 if __name__ == "__main__":
+
     parser = argparse.ArgumentParser(
         description="Script to plot 2d flow vectors with pressure contours")
     parser.add_argument("-t", "--timestep", type=int, default=None,
@@ -72,6 +77,13 @@ if __name__ == "__main__":
     parser.add_argument("--source", type=str, default=None,
                         help="filename of data to read, "
                         "if not present read from stdin")
-
+    parser.add_argument("--savename", type=str, default=None,
+                        help="filename to save plot as, "
+                        "if not provided plot is displayed")
+    parser.add_argument("--title", type=str, default=None,
+                        help="Prefix of plot title if wanted, "
+                        "title always includes timestep")
+    
     args = parser.parse_args()
-    plot_flow(get_source(args.source), args.source, args.timestep)
+
+    plot_flow(get_source(args.source), args.source, args.timestep, args.savename, args.title)

@@ -30,6 +30,11 @@ while (S11_TARGETS)
   target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
   target_link_libraries(${TARGET_NAME} util)
   target_compile_definitions(${TARGET_NAME} PUBLIC ${TARGET_DEFINE})
+  
+  ADD_PLOT_FLOW_TARGET(
+	  SOURCE_TARGET ${TARGET_NAME}
+	  PLOT_ARGS --savename ${TARGET_SUFFIX}.png --title ${TARGET_DEFINE})
+
 endwhile()
 
 MAKE_SOR_HEADER(
