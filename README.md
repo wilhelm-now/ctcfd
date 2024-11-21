@@ -9,7 +9,7 @@ I thought it would be fun.
 
 ## Numbers
 Numbers are saved in types
-```
+```c++
 typedef long long representation_type;
 
 template<representation_type number>
@@ -21,7 +21,7 @@ struct number_constant
 
 To save floating point numbers we multiply them by some big number first. We can divide by this big number when retrieving the number. GCC allows static_cast'ing from double at compile time, Clang does not.
 
-```
+```c++
 #define BIG_NUMBER 123456789
 
 #define NUMBER_MAKE(number) number_constant<static_cast<representation_type>((number) * BIG_NUMBER)>
@@ -34,7 +34,7 @@ See this in util/number.h.
 ## Typelists
 Alexanderscu's introduction to typelists is better than anything I can write here. The usual definition is used.
 
-```
+```c++
 struct null_t {}; // Tag type indicating end of typelist
 
 template<typename T, typename U>
@@ -48,13 +48,13 @@ struct typelist
 
 A typelist holding a single type `T1` is has type `typelist<T1, null_t>`. A typelist holding two types `T1` and `T2` has type `typelist<T1, typelist<T2, null_t> >`. To hold many numbers the previous `number_constant` with helper macro is used.
 
-```
+```c++
 typedef typelist<NUMBER_MAKE(0), typelist<NUMBER_MAKE(1), typelist<NUMBER_MAKE(2), null_t> > > numbers;
 ```
 
 For development macros can help define longer typelists.
 
-```
+```c++
 #define TYPELIST_1(T1) typelist<T1, null_t>
 #define TYPELIST_2(T1, T2) typelist<T1, TYPELIST_1(T2)>
 #define TYPELIST_3(T1, T2, T3) typelist<T1, TYPELIST_2(T2, T3)>
@@ -68,7 +68,7 @@ Computation is done recursively. First the front elements are used to do one ste
 
 Step3 - Diffusion is a useful example. 
 
-```
+```c++
 // After discretization and rearranging next guess for value = u_current_center + (nu*dt/(dx*dx))*(u_current_right – 2*u_current_center + u_current_left)
 template<typename U1, typename U2, typename U3, typename tail>
 class compute_diffusion<typelist<U1, typelist<U2, typelist<U3, tail> > > >
@@ -84,7 +84,7 @@ public:
 
 As operations become more complex they are moved to their own metafunction. In the above example this could be written like below.
 
-```
+```c++
 template<typename U1, typename U2, typename U3>
 struct compute_diffusion_point
 {
@@ -98,7 +98,7 @@ struct compute_diffusion_point
 
 Recursion is stopped when the typelist reaches the end. This is also when boundary conditions at the far edge is applied by specializing the computation struct. Fixed edge values are simple.
 
-```
+```c++
 template<typename U1, typename U2>
 class compute_diffusion<typelist<U1, typelist<U2, null_t> > >
 {
@@ -109,7 +109,7 @@ public:
 
 For fixed gradient boundary conditions the recursion stops one step earlier and sets the edge value depending on the previous value. In this project only zero gradient is used and then the value is copied.
 
-```
+```c++
 template<typename U1, typename U2, typename U3>
 class compute_diffusion<typelist<U1, typelist<U2, typelist<U3, null_t> > > >
 {
@@ -123,7 +123,7 @@ public:
 
 In the recursive computation there is no way to tell if the current iteration is the first. Instead another metafunction is used to initiate the computation for the rest of the domain and that result is saved in a new typelist with first element dependent on the boundary condition. Fixed value boundary conditions are simple.
 
-```
+```c++
 template<typename types>
 class diffusion
 {
@@ -134,7 +134,7 @@ public:
 
 Again, fixed gradient sets the edge value of the output dependent on the inner value. Zero gradient boundary condition is shown below.
 
-```
+```c++
 template<typename types>
 class diffusion
 {
@@ -150,7 +150,7 @@ Initial conditions are computed from the index of each node. A type `for_i` is s
 
 Constants like `DX` are defined in a header configured depending on build settings. Below is an example of a square wave used for steps 1 through 4.
 
-```
+```c++
 struct initial
 {
 	template<unsigned idx>
@@ -168,7 +168,7 @@ Complicated initial conditions for Step4 are generated using python.
 
 Iteration in time is also done recursively. The base case is defined by initial conditions and subsequent iterations do some transform on the previous value. A possible implementation of diffusion is shown below.
 
-```
+```c++
 
 template<unsigned iteration>
 struct diffusion;
