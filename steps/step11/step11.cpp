@@ -31,17 +31,6 @@ struct grid_y
 	};
 };
 
-struct b_func
-{
-	template<unsigned index_i, unsigned index_j>
-	struct func
-	{
-		typedef NUMBER_MAKE(
-			index_i == NX / 4 && index_j == NY / 4 ? 100.0
-			: index_i == 3 * NX / 4 && index_j == 3 * NY / 4 ? -100.0 : 0.0) type;
-	};
-};
-
 struct zero_velocity_func
 {
 	template<unsigned index_i, unsigned index_j>
@@ -50,8 +39,6 @@ struct zero_velocity_func
 		typedef POINT_MAKE((index_j == (NY - 1)) ? 1.0 : 0.0, 0.0) type;
 	};
 };
-
-typedef for_ij<NX, NY, b_func>::type source_b;
 
 typedef zeros2d<NX, NY>::type initial_pressure;
 typedef for_ij<NX, NY, zero_velocity_func>::type initial_velocity;
