@@ -42,4 +42,7 @@ MAKE_SOR_HEADER(
 	LY ${LY}
 	PARAMNAME CTCFD_POISSON_SOR_OMEGA
 )
-target_sources(step10-sor PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/step10_sor_omega.h)
+
+foreach(target step10-sor step10-sor-tracked)
+  target_sources(${target} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/step10_sor_omega.h)
+endforeach()
